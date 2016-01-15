@@ -73,7 +73,7 @@ void HttpRequest::readHeader(QTcpSocket* socket)
     if (colon>0)
     {
         // Received a line with a colon - a header
-        currentHeader=newData.left(colon);
+        currentHeader=newData.left(colon).toLower();
         QByteArray value=newData.mid(colon+1).trimmed();
         headers.insert(currentHeader,value);
         #ifdef SUPERVERBOSE
@@ -336,12 +336,12 @@ QByteArray HttpRequest::getVersion() const
 
 QByteArray HttpRequest::getHeader(const QByteArray& name) const
 {
-    return headers.value(name);
+    return headers.value(name.toLower());
 }
 
 QList<QByteArray> HttpRequest::getHeaders(const QByteArray& name) const
 {
-    return headers.values(name);
+    return headers.values(name.toLower());
 }
 
 QMultiMap<QByteArray,QByteArray> HttpRequest::getHeaderMap() const
