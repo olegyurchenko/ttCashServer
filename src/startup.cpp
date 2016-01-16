@@ -79,11 +79,20 @@ void Startup::start()
     logger=new FileLogger(logSettings,10000,app);
     logger->installMsgHandler();
 
+    QSettings* webSettings=new QSettings(configFileName,QSettings::IniFormat,app);
+    webSettings->beginGroup("files");
+
+    QSettings* cashSettings=new QSettings(configFileName,QSettings::IniFormat,app);
+    cashSettings->beginGroup("server");
+
+    RequestHandler *requestHandler = new RequestHandler(webSettings, cashSettings, app);
+
     // Configure and start the TCP listener
     qDebug("ServiceHelper: Starting service");
     QSettings* listenerSettings=new QSettings(configFileName,QSettings::IniFormat,app);
+
     listenerSettings->beginGroup("listener");
-    listener=new HttpListener(listenerSettings,new RequestHandler(app),app);
+    listener=new HttpListener(listenerSettings, requestHandler, app);
 
     qWarning("Startup: Service has started");
 }

@@ -3,16 +3,26 @@
 
 TARGET = cash_server
 TEMPLATE = app
-QT = core network
+QT = core network xml
 CONFIG += console
 
 HEADERS += \
            src/startup.h \
-           src/requesthandler.h
+           src/requesthandler.h \
+    src/cash_requesthandler.h \
+    src/web_requesthandler.h \
+    src/xmlrequest.h \
+    src/xmlresponse.h \
+    src/xmlserver.h
 
 SOURCES += src/main.cpp \
            src/startup.cpp \
-           src/requesthandler.cpp
+           src/requesthandler.cpp \
+    src/cash_requesthandler.cpp \
+    src/web_requesthandler.cpp \
+    src/xmlrequest.cpp \
+    src/xmlresponse.cpp \
+    src/xmlserver.cpp
 
 
 #---------------------------------------------------------------------------------------

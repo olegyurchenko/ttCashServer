@@ -143,7 +143,7 @@ public:
     QMap<QByteArray,QByteArray>& getCookieMap();
 
     /** Get the address of the connected peer */
-    QHostAddress getPeerAddress() const;
+    QHostAddress getPeerAddress() const {return peerAddress;}
 
 private:
 

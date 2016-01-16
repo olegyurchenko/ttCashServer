@@ -9,13 +9,14 @@
 * started 16.01.2016  9:04:31<br>
 * @pkgdoc cash_requesthandler
 * @author oleg
-* @version 0.01 
+* @version 0.01
 */
 /*----------------------------------------------------------------------------*/
 #ifndef CASH_REQUESTHANDLER_H_1452927871
 #define CASH_REQUESTHANDLER_H_1452927871
 /*----------------------------------------------------------------------------*/
 #include "httprequesthandler.h"
+#include "xmlserver.h"
 
 class QSettings;
 class CashRequestHandler : public HttpRequestHandler
@@ -25,6 +26,8 @@ class CashRequestHandler : public HttpRequestHandler
 public:
     CashRequestHandler(QSettings* settings, QObject* parent=0);
     void service(HttpRequest& request, HttpResponse& response);
+protected:
+  XmlServer *mXmlServer;
 };
 /*----------------------------------------------------------------------------*/
 #endif /*CASH_REQUESTHANDLER_H_1452927871*/

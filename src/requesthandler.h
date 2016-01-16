@@ -1,17 +1,15 @@
-/**
-  @file
-  @author Stefan Frings
-*/
-
 #ifndef REQUESTHANDLER_H
 #define REQUESTHANDLER_H
 
 #include "httprequesthandler.h"
+#include <QStringList>
 
 /**
   The request handler receives incoming HTTP requests and generates responses.
 */
 
+class WebRequestHandler;
+class CashRequestHandler;
 class RequestHandler : public HttpRequestHandler {
     Q_OBJECT
     Q_DISABLE_COPY(RequestHandler)
@@ -21,7 +19,7 @@ public:
       Constructor.
       @param parent Parent object
     */
-    RequestHandler(QObject* parent=0);
+    RequestHandler(QSettings* webSettings, QSettings* cashSettings, QObject* parent=0);
 
     /**
       Process an incoming HTTP request.
@@ -30,6 +28,10 @@ public:
     */
     void service(HttpRequest& request, HttpResponse& response);
 
+protected:
+    QStringList mCashPathList;
+    WebRequestHandler *mWebRequestHandler;
+    CashRequestHandler *mCashRequestHandler;
 };
 
 #endif // REQUESTHANDLER_H
