@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/sql">
+        <file>create_ksef_stor.sql</file>
+    </qresource>
+</RCC>

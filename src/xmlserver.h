@@ -21,6 +21,7 @@
 #include "xmlrequest.h"
 #include "xmlresponse.h"
 /*----------------------------------------------------------------------------*/
+class KsefDatabase;
 class XmlServer : public QObject
 {
   Q_OBJECT
@@ -29,6 +30,8 @@ public:
   XmlServer(QSettings *settings, QObject *parent = NULL);
   virtual ~XmlServer();
   void service(XmlRequest& request, XmlResponse& response);
+protected:
+  KsefDatabase *ksefDatabase;
 };
 /*----------------------------------------------------------------------------*/
 #endif /*XMLSERVER_H_1452963044*/

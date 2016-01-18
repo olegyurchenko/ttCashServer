@@ -3,7 +3,7 @@
 
 TARGET = cash_server
 TEMPLATE = app
-QT = core network xml
+QT = core network xml sql
 CONFIG += console
 
 HEADERS += \
@@ -13,7 +13,8 @@ HEADERS += \
     src/web_requesthandler.h \
     src/xmlrequest.h \
     src/xmlresponse.h \
-    src/xmlserver.h
+    src/xmlserver.h \
+    src/ksef_database.h
 
 SOURCES += src/main.cpp \
            src/startup.cpp \
@@ -22,7 +23,8 @@ SOURCES += src/main.cpp \
     src/web_requesthandler.cpp \
     src/xmlrequest.cpp \
     src/xmlresponse.cpp \
-    src/xmlserver.cpp
+    src/xmlserver.cpp \
+    src/ksef_database.cpp
 
 
 #---------------------------------------------------------------------------------------
@@ -36,3 +38,6 @@ include(QtWebApp/logging/logging.pri)
 
 
 INCLUDEPATH += src
+
+RESOURCES += \
+    resource/resource.qrc

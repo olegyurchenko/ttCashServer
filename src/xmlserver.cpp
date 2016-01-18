@@ -13,10 +13,16 @@
 */
 /*----------------------------------------------------------------------------*/
 #include "xmlserver.h"
+#include "ksef_database.h"
 /*----------------------------------------------------------------------------*/
 XmlServer :: XmlServer(QSettings *settings, QObject *parent)
   : QObject(parent)
 {
+  ksefDatabase = new KsefDatabase(settings, this);
+  if(ksefDatabase->isError())
+  {
+    qCritical("Error open KSEF database:%s", qPrintable(ksefDatabase->message()));
+  }
 }
 /*----------------------------------------------------------------------------*/
 XmlServer :: ~XmlServer()
