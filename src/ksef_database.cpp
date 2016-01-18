@@ -9,7 +9,7 @@
 * started 18.01.2016 10:36:04<br>
 * @pkgdoc ksef_database
 * @author oleg
-* @version 0.01 
+* @version 0.01
 */
 /*----------------------------------------------------------------------------*/
 #include "ksef_database.h"
@@ -20,6 +20,8 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
+#include "ksef_document.h"
+#include "xmlresponse.h"
 /*----------------------------------------------------------------------------*/
 #define CONNECTION_NAME "KSEF"
 static int m_unique = 0;
@@ -123,6 +125,119 @@ bool KsefDatabase :: create()
       error(q);
       return false;
     }
+  }
+  return true;
+}
+/*----------------------------------------------------------------------------*/
+bool KsefDatabase :: cashRegister(const KsefDocument& doc, XmlResponse& response)
+{
+  QSqlQuery q(QSqlDatabase::database(mConnectionName));
+  int id = cashId(doc.serial());
+  if(isError())
+    return false;
+
+  if(id < 0)
+  {
+    q.prepare("insert into CR(ZN) values(?)");
+    q.addBindValue(doc.serial());
+    if(!q.exec())
+    {
+      error(q);
+      return false;
+    }
+  }
+  //!!!!!!!!!!!!!!!!!!!
+  //TODO: Send not 0 DI !!!
+  //!!!!!!!!!!!!!!!!!!!
+  int maxDi = 0;
+  q.prepare("select max(DI) from TAG_DAT where (1=1)\n"
+            "and ZN=?\n"
+            "and FN=?\n"
+            "and TN=?\n"
+            );
+  q.addBindValue(doc.serial());
+  q.addBindValue(doc.fiscal());
+  q.addBindValue(doc.tax());
+  if(!q.exec())
+  {
+    error(q);
+    return false;
+  }
+  if(q.first())
+    maxDi = q.value(0).toInt();
+
+  QDomElement e = response.doc().createElement("DI");
+  e.appendChild(response.doc().createTextNode(QString::number(maxDi)));
+  response.data().appendChild(e);
+
+  return true;
+}
+/*----------------------------------------------------------------------------*/
+int KsefDatabase :: cashId(const QString& serial)
+{
+  QSqlQuery q(QSqlDatabase::database(mConnectionName));
+  q.prepare("select CR_ID from CR where ZN = ?");
+  q.addBindValue(serial);
+  if(!q.exec())
+  {
+    error(q);
+    return -2;
+  }
+
+  if(!q.first())
+    return -1;
+
+  return q.value(0).toInt();
+}
+/*----------------------------------------------------------------------------*/
+bool KsefDatabase :: cashAddDoc(const KsefDocument& doc, XmlResponse &response)
+{
+  int id = cashId(doc.serial());
+  if(isError())
+    return false;
+
+  if(id < 0 && cashRegister(doc, response))
+    id = cashId(doc.serial());
+
+  if(id < 0)
+    return false;
+
+  QSqlQuery q(QSqlDatabase::database(mConnectionName));
+  q.prepare("select DAT_ID from TAG_DAT where (1=1)\n"
+            "and DI=?\n"
+            "and ZN=?\n"
+            "and FN=?\n"
+            "and TN=?\n"
+            "and TS=?\n"
+            );
+  q.addBindValue(doc.di());
+  q.addBindValue(doc.serial());
+  q.addBindValue(doc.fiscal());
+  q.addBindValue(doc.tax());
+  q.addBindValue(doc.time());
+  if(!q.exec())
+  {
+    error(q);
+    return false;
+  }
+
+  if(!q.first())
+  {
+    q.prepare("insert into TAG_DAT(CR_ID, DI,ZN,FN,TN,TS,EXT,XML) values(?,?,?,?,?,?,?,?)");
+    q.addBindValue(id);
+    q.addBindValue(doc.di());
+    q.addBindValue(doc.serial());
+    q.addBindValue(doc.fiscal());
+    q.addBindValue(doc.tax());
+    q.addBindValue(doc.time());
+    q.addBindValue(0);
+    q.addBindValue(doc.toXmlString());
+  }
+
+  if(!q.exec())
+  {
+    error(q);
+    return false;
   }
   return true;
 }

@@ -14,7 +14,8 @@ HEADERS += \
     src/xmlrequest.h \
     src/xmlresponse.h \
     src/xmlserver.h \
-    src/ksef_database.h
+    src/ksef_database.h \
+    src/ksef_document.h
 
 SOURCES += src/main.cpp \
            src/startup.cpp \
@@ -24,7 +25,8 @@ SOURCES += src/main.cpp \
     src/xmlrequest.cpp \
     src/xmlresponse.cpp \
     src/xmlserver.cpp \
-    src/ksef_database.cpp
+    src/ksef_database.cpp \
+    src/ksef_document.cpp
 
 
 #---------------------------------------------------------------------------------------

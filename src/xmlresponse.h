@@ -27,6 +27,8 @@ public:
   {
     Ok = 0,
     ParserError = 1,
+    InvalidMethod = 2,
+    InvalidQuery = 3,
     InternalError = 100,
     UnknownError = -1
   } Status;
@@ -51,6 +53,7 @@ public:
   QString message() {return mMessage;}
   void setMessage(const QString& m);
   bool isOk() {return mStatus == Ok;}
+  bool isError() {return mStatus != Ok;}
   void setRequestId(int id);
 };
 

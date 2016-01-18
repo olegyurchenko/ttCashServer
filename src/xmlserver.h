@@ -30,8 +30,16 @@ public:
   XmlServer(QSettings *settings, QObject *parent = NULL);
   virtual ~XmlServer();
   void service(XmlRequest& request, XmlResponse& response);
+  bool isKsefError() const {return mIsKsefError;}
+  QString ksefMessage() {return mKsefMessage;}
 protected:
+  bool mIsKsefError;
+  QString mKsefMessage;
   KsefDatabase *ksefDatabase;
+
+  void methodRegister(XmlRequest& request, XmlResponse& response);
+  void methodUpload(XmlRequest& request, XmlResponse& response);
+  void methodDownload(XmlRequest& request, XmlResponse& response);
 };
 /*----------------------------------------------------------------------------*/
 #endif /*XMLSERVER_H_1452963044*/

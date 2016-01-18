@@ -8,13 +8,13 @@
 #----------------------------------------------------------------------------
 #==Таблица ЭККА==
 CREATE TABLE IF NOT EXISTS CR (
-CR_ID     INTEGER PRIMARY KEY, # Код ЭККА
+CR_ID     INTEGER PRIMARY KEY AUTOINCREMENT,  # Код ЭККА
 ZN        VARCHAR(16) # Заводской номер
 );
 
 #==Таблица документов TAG_DAT==
 CREATE TABLE IF NOT EXISTS TAG_DAT(
-DAT_ID INTEGER PRIMARY KEY, # Код документа
+DAT_ID INTEGER PRIMARY KEY AUTOINCREMENT, # Код документа
 CR_ID  INTEGER, # Код ЭККА
 DI     INTEGER, # Код документа в хранилище КСЕФ
 ZN     VARCHAR(16), # Заводской номер
@@ -27,14 +27,14 @@ XML    BLOB     # Полный XML в кодировке UTF-8
 
 #== Таблица чеков TAG_C ==
 CREATE TABLE IF NOT EXISTS TAG_C(
-C_ID   INTEGER PRIMARY KEY, # Код чека
+C_ID   INTEGER PRIMARY KEY AUTOINCREMENT, # Код чека
 DAT_ID INTEGER, # Код документа
 T      INTEGER  # Тип чека: 0-чек продажи, 1-чек выплаты, 2-служебный чек, 3-чек приема топлива, 100-Z-отчет
 );
 
 #==Таблица позиций чков/отчетов ITEMS==
 CREATE TABLE IF NOT EXISTS ITEMS(
-ITEM_ID   INTEGER PRIMARY KEY, # Код позиции
+ITEM_ID   INTEGER PRIMARY KEY AUTOINCREMENT, # Код позиции
 C_ID      INTEGER, # Код чека
 DAT_ID    INTEGER, # Код документа
 N         INTEGER, # Порядковый номер операции в чеке
@@ -66,7 +66,7 @@ T         INTEGER  # Код типа операции
 
 #==Таблица продаж/отмен товаров TAG_P==
 CREATE TABLE IF NOT EXISTS TAG_P(
-P_ID      INTEGER PRIMARY KEY, # Код
+P_ID      INTEGER PRIMARY KEY AUTOINCREMENT, # Код
 ITEM_ID   INTEGER, # Код позиции
 N         INTEGER, # Порядковый номер операции в чеке
 CNC       BOOL,    # Признак отмены операции
@@ -83,7 +83,7 @@ RT        INTEGER  #  Тип выплаты
 
 #==Таблица скидок/наценок TAG_D==
 CREATE TABLE IF NOT EXISTS TAG_D(
-D_ID      INTEGER PRIMARY KEY, # Код
+D_ID      INTEGER PRIMARY KEY AUTOINCREMENT, # Код
 ITEM_ID   INTEGER, # Код позиции
 N         INTEGER, # Порядковый номер операции в чеке
 CNC       BOOL,    # Признак отмены операции
@@ -97,7 +97,7 @@ SM        INTEGER  # Сумма операции (копейки)
 
 #==Таблица вносов/выноса денег TAG_IO==
 CREATE TABLE IF NOT EXISTS TAG_IO(
-IO_ID     INTEGER PRIMARY KEY, # Код
+IO_ID     INTEGER PRIMARY KEY AUTOINCREMENT, # Код
 ITEM_ID   INTEGER, # Код позиции
 O         BOOL,    # Признак выноса
 SM        INTEGER  # Сумма операции (копейки)
@@ -105,7 +105,7 @@ SM        INTEGER  # Сумма операции (копейки)
 
 #==Таблица оплат чеков TAG_M==
 CREATE TABLE IF NOT EXISTS TAG_M(
-M_ID      INTEGER PRIMARY KEY, # Код
+M_ID      INTEGER PRIMARY KEY AUTOINCREMENT, # Код
 ITEM_ID   INTEGER, # Код позиции
 N         INTEGER, # Порядковый номер операции в чеке
 CNC       BOOL,    # Признак отмены операции
@@ -118,7 +118,7 @@ RRN       VARCHAR(32) # Код транзакции от платежного т
 
 #==Таблица комментариев в чеках TAG_L==
 CREATE TABLE IF NOT EXISTS TAG_L(
-M_ID     INTEGER PRIMARY KEY, # Код
+M_ID     INTEGER PRIMARY KEY AUTOINCREMENT, # Код
 ITEM_ID  INTEGER, # Код позиции
 N        INTEGER, # Порядковый номер операции в чеке
 TXT      VARCHAR(16) # Текст комментария
@@ -126,7 +126,7 @@ TXT      VARCHAR(16) # Текст комментария
 
 #==Таблица сумм чекоа TAG_E==
 CREATE TABLE IF NOT EXISTS TAG_E(
-E_ID     INTEGER PRIMARY KEY, # Код
+E_ID     INTEGER PRIMARY KEY AUTOINCREMENT, # Код
 ITEM_ID  INTEGER, # Код позиции
 N        INTEGER, # Порядковый номер операции в чеке
 "NO"     INTEGER, # Номер фискального чека
@@ -138,7 +138,7 @@ TS       DATETIME # Время создания документа
 
 #==Таблица налогообложения в чеке TAG_TX==
 CREATE TABLE IF NOT EXISTS TAG_TX(
-TX_ID    INTEGER PRIMARY KEY, # Код
+TX_ID    INTEGER PRIMARY KEY AUTOINCREMENT, # Код
 ITEM_ID  INTEGER, # Код позиции
 TX       INTEGER, # Обозначение налога
 TXPR     INTEGER, # Ставка в процентах (в 0.01%)
@@ -151,7 +151,7 @@ TXAL     INT      # Алгоритм начисления сбора
 
 #=Таблица продаж/отмен топлива TAG_PP==
 CREATE TABLE IF NOT EXISTS TAG_PP(
-PP_ID     INTEGER PRIMARY KEY, # Код
+PP_ID     INTEGER PRIMARY KEY AUTOINCREMENT, # Код
 ITEM_ID   INTEGER, # Код позиции
 N         INTEGER, # Порядковый номер операции в чеке
 CNC       BOOL,    # Признак отмены операции
@@ -170,7 +170,7 @@ TX2       INTEGER  #  Обозначение 2-го налога
 
 #=Таблица поверочных отпусков TAG_PV==
 CREATE TABLE IF NOT EXISTS TAG_PV(
-PV_ID     INTEGER PRIMARY KEY, # Код
+PV_ID     INTEGER PRIMARY KEY AUTOINCREMENT, # Код
 ITEM_ID   INTEGER, # Код позиции
 С         INTEGER, # Код товара
 NM        VARCHAR(32), # Название товара
@@ -182,7 +182,7 @@ Q         INTEGER  # Количество (в 0.001 единицах)
 
 #==Таблица приходов топлива TAG_IF==
 CREATE TABLE IF NOT EXISTS TAG_IF(
-IF_ID     INTEGER PRIMARY KEY, # Код
+IF_ID     INTEGER PRIMARY KEY AUTOINCREMENT, # Код
 ITEM_ID   INTEGER, # Код позиции
 С         INTEGER, # Код товара
 NM        VARCHAR(32), # Название товара
@@ -193,7 +193,7 @@ Q         INTEGER  #  Количество (в 0.001 единицах)
 
 #==Таблица информации по налоговым группам (Z-отчет) TAG_TXSZ==
 CREATE TABLE IF NOT EXISTS TAG_TXSZ(
-TXSZ_ID  INTEGER PRIMARY KEY, # Код
+TXSZ_ID  INTEGER PRIMARY KEY AUTOINCREMENT, # Код
 ITEM_ID  INTEGER, # Код позиции
 TX       INTEGER, # Обозначение налога
 TS       DATE,    # Дата программирования налога
@@ -211,7 +211,7 @@ SMO      INTEGER  # Оборот по выплатам (копейки)
 
 #==Таблица информации по оплатам (Z-отчет) TAG_MZ==
 CREATE TABLE IF NOT EXISTS TAG_MZ(
-MZ_ID    INTEGER PRIMARY KEY, # Код
+MZ_ID    INTEGER PRIMARY KEY AUTOINCREMENT, # Код
 ITEM_ID  INTEGER, # Код позиции
 T        INTEGER, # Код дормы оплаты. 0-Наличные
 NM       VARCHAR(16), # Название формы оплаты
@@ -221,7 +221,7 @@ SMO      INTEGER  # Сумма выплат (копейки)
 
 #==Таблица сумм вносов/выноса денег (Z-отчет) TAG_IOZ==
 CREATE TABLE IF NOT EXISTS TAG_IOZ(
-IOZ_ID    INTEGER PRIMARY KEY, # Код
+IOZ_ID    INTEGER PRIMARY KEY AUTOINCREMENT, # Код
 ITEM_ID   INTEGER, # Код позиции
 SMI       INTEGER, #  Сумма вносов (копейки)
 SMO       INTEGER  #  Сумма выносов (копейки)
@@ -229,7 +229,7 @@ SMO       INTEGER  #  Сумма выносов (копейки)
 
 #==Таблица количаства чеков продаж/выплат (Z-отчет) TAG_NCZ==
 CREATE TABLE IF NOT EXISTS TAG_NCZ(
-NCZ_ID    INTEGER PRIMARY KEY, # Код
+NCZ_ID    INTEGER PRIMARY KEY AUTOINCREMENT, # Код
 ITEM_ID   INTEGER, # Код позиции
 NI        INTEGER, # Кол. чеков оплат
 "NO"      INTEGER  # Кол. чеков выплат
@@ -237,7 +237,7 @@ NI        INTEGER, # Кол. чеков оплат
 
 #==Таблица суммарной информации по типам топлива (Z-отчет) TAG_FZ==
 CREATE TABLE IF NOT EXISTS TAG_FZ(
-FZ_ID     INTEGER PRIMARY KEY, # Код
+FZ_ID     INTEGER PRIMARY KEY AUTOINCREMENT, # Код
 ITEM_ID   INTEGER, # Код позиции
 С         INTEGER, # Код товара
 NM        VARCHAR(32), # Название товара
@@ -250,7 +250,7 @@ SF        INTEGER  #  Остаток топлива в мл
 
 #==Таблица суммарной информации по продажам формам оплат типаов топлива (Z-отчет)
 CREATE TABLE IF NOT EXISTS TAG_FZ(
-FZ_ID     INTEGER PRIMARY KEY, # Код
+FZ_ID     INTEGER PRIMARY KEY AUTOINCREMENT, # Код
 ITEM_ID   INTEGER, # Код позиции
 С         INTEGER, # Код товара
 T         INTEGER, # Код дормы оплаты. 0-Наличные
@@ -261,7 +261,7 @@ SM        INTEGER, # Сумма продаж (копейки)
 
 #==Таблица суммарной информации по резервуарам (Z-отчет) TAG_SMIZ==
 CREATE TABLE IF NOT EXISTS TAG_SMIZ(
-SMIZ_ID   INTEGER PRIMARY KEY, # Код
+SMIZ_ID   INTEGER PRIMARY KEY AUTOINCREMENT, # Код
 ITEM_ID   INTEGER, # Код позиции
 NR        INTEGER, # Номер резервуара
 С         INTEGER, # Код товара
@@ -270,7 +270,7 @@ SF        INTEGER  # Остаток топлива в мл
 
 #==Таблица ТРК (Z-отчет) TAG_NPSZ==
 CREATE TABLE IF NOT EXISTS TAG_NPSZ(
-NPSZ_NPSZ INTEGER PRIMARY KEY, # Код
+NPSZ_NPSZ INTEGER PRIMARY KEY AUTOINCREMENT, # Код
 ITEM_ID   INTEGER, # Код позиции
 NP        INTEGER, # Номер ТРК
 NR        INTEGER  # Номер резервуара
