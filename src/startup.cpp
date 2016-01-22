@@ -3,7 +3,6 @@
   @author Stefan Frings
 */
 
-#include "static.h"
 #include "startup.h"
 #include "filelogger.h"
 #include "requesthandler.h"

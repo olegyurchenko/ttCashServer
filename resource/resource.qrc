@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/sql">
         <file>create_ksef_stor.sql</file>
+        <file>create_cash_stor.sql</file>
     </qresource>
 </RCC>

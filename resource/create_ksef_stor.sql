@@ -9,8 +9,11 @@
 #==Таблица ЭККА==
 CREATE TABLE IF NOT EXISTS CR (
 CR_ID     INTEGER PRIMARY KEY AUTOINCREMENT,  # Код ЭККА
-ZN        VARCHAR(16) # Заводской номер
+ZN        VARCHAR(16), # Заводской номер
+REG       DATETIME     # Время добавления в базу
 );
+
+CREATE INDEX IF NOT EXISTS CR_IDX1 ON CR(ZN);
 
 #==Таблица документов TAG_DAT==
 CREATE TABLE IF NOT EXISTS TAG_DAT(
@@ -21,9 +24,12 @@ ZN     VARCHAR(16), # Заводской номер
 FN     VARCHAR(16), # фискальный номер
 TN     VARCHAR(16), # ИНН
 TS     DATETIME, # Время создания документа
+UP     DATETIME, # Время загрузки документа
 EXT    INTEGER, # Признак обработки сохраненного XML
 XML    BLOB     # Полный XML в кодировке UTF-8
 );
+
+CREATE INDEX IF NOT EXISTS TAG_DAT_IDX1 ON TAG_DAT(DI,ZN,FN,TN,TS);
 
 #== Таблица чеков TAG_C ==
 CREATE TABLE IF NOT EXISTS TAG_C(
@@ -31,6 +37,8 @@ C_ID   INTEGER PRIMARY KEY AUTOINCREMENT, # Код чека
 DAT_ID INTEGER, # Код документа
 T      INTEGER  # Тип чека: 0-чек продажи, 1-чек выплаты, 2-служебный чек, 3-чек приема топлива, 100-Z-отчет
 );
+
+CREATE INDEX IF NOT EXISTS TAG_C_IDX1 ON TAG_C(DAT_ID,T);
 
 #==Таблица позиций чков/отчетов ITEMS==
 CREATE TABLE IF NOT EXISTS ITEMS(
@@ -70,7 +78,7 @@ P_ID      INTEGER PRIMARY KEY AUTOINCREMENT, # Код
 ITEM_ID   INTEGER, # Код позиции
 N         INTEGER, # Порядковый номер операции в чеке
 CNC       BOOL,    # Признак отмены операции
-С         INTEGER, # Код товара
+C         INTEGER, # Код товара
 CD        VARCHAR(16), # Штрихкод товара
 NM        VARCHAR(32), # Название товара
 SM        INTEGER, #  Сумма операции (копейки)
@@ -155,7 +163,7 @@ PP_ID     INTEGER PRIMARY KEY AUTOINCREMENT, # Код
 ITEM_ID   INTEGER, # Код позиции
 N         INTEGER, # Порядковый номер операции в чеке
 CNC       BOOL,    # Признак отмены операции
-С         INTEGER, # Код товара
+C         INTEGER, # Код товара
 CD        VARCHAR(16), # Штрихкод товара
 NM        VARCHAR(32), # Название товара
 OV        VARCHAR(16), # Единица изменения
@@ -172,7 +180,7 @@ TX2       INTEGER  #  Обозначение 2-го налога
 CREATE TABLE IF NOT EXISTS TAG_PV(
 PV_ID     INTEGER PRIMARY KEY AUTOINCREMENT, # Код
 ITEM_ID   INTEGER, # Код позиции
-С         INTEGER, # Код товара
+C         INTEGER, # Код товара
 NM        VARCHAR(32), # Название товара
 OV        VARCHAR(16), # Единица изменения
 PRK       INTEGER, # Номер ТРК
@@ -184,7 +192,7 @@ Q         INTEGER  # Количество (в 0.001 единицах)
 CREATE TABLE IF NOT EXISTS TAG_IF(
 IF_ID     INTEGER PRIMARY KEY AUTOINCREMENT, # Код
 ITEM_ID   INTEGER, # Код позиции
-С         INTEGER, # Код товара
+C         INTEGER, # Код товара
 NM        VARCHAR(32), # Название товара
 OV        VARCHAR(16), # Единица изменения
 NR        INTEGER,  # Номер резервуара
@@ -239,7 +247,7 @@ NI        INTEGER, # Кол. чеков оплат
 CREATE TABLE IF NOT EXISTS TAG_FZ(
 FZ_ID     INTEGER PRIMARY KEY AUTOINCREMENT, # Код
 ITEM_ID   INTEGER, # Код позиции
-С         INTEGER, # Код товара
+C         INTEGER, # Код товара
 NM        VARCHAR(32), # Название товара
 "IF"      INTEGER, #  Количество принятого топлива в мл
 "OF"      INTEGER, #  Количество отпущенного топлива в мл
@@ -249,22 +257,22 @@ SF        INTEGER  #  Остаток топлива в мл
 );
 
 #==Таблица суммарной информации по продажам формам оплат типаов топлива (Z-отчет)
-CREATE TABLE IF NOT EXISTS TAG_FZ(
-FZ_ID     INTEGER PRIMARY KEY AUTOINCREMENT, # Код
+CREATE TABLE IF NOT EXISTS TAG_SMIZ(
+SMIZ_ID     INTEGER PRIMARY KEY AUTOINCREMENT, # Код
 ITEM_ID   INTEGER, # Код позиции
-С         INTEGER, # Код товара
+C         INTEGER, # Код товара
 T         INTEGER, # Код дормы оплаты. 0-Наличные
 NM        VARCHAR(16), # Название формы оплаты
 SM        INTEGER, # Сумма продаж (копейки)
 "OF"      INTEGER  # Отпущено (мл)
 );
 
-#==Таблица суммарной информации по резервуарам (Z-отчет) TAG_SMIZ==
-CREATE TABLE IF NOT EXISTS TAG_SMIZ(
+#==Таблица суммарной информации по резервуарам (Z-отчет)==
+CREATE TABLE IF NOT EXISTS TAG_SFZ(
 SMIZ_ID   INTEGER PRIMARY KEY AUTOINCREMENT, # Код
 ITEM_ID   INTEGER, # Код позиции
 NR        INTEGER, # Номер резервуара
-С         INTEGER, # Код товара
+C         INTEGER, # Код товара
 SF        INTEGER  # Остаток топлива в мл
 );
 
