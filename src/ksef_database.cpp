@@ -91,13 +91,16 @@ bool KsefDatabase :: create()
   QString line;
 
   QStringList sqlSource;
-  //Read && remove comments #
+  //Read && remove comments # && --
   while (!in.atEnd())
   {
     line = in.readLine();
     QStringList lst = line.split('#', QString::KeepEmptyParts);
     if(!lst.isEmpty() && !lst.at(0).isEmpty())
-      sqlSource.append(lst.at(0));
+    {
+      const QString &s = lst.at(0);
+      sqlSource.append(s.mid(0, s.indexOf("--")));
+    }
   }
 
   QString sql = sqlSource.join(QChar(' '));

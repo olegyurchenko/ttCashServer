@@ -7,6 +7,7 @@
 ##
 #----------------------------------------------------------------------------
 #==Таблица ЭККА==
+--test comment
 CREATE TABLE IF NOT EXISTS CR (
 CR_ID     INTEGER PRIMARY KEY AUTOINCREMENT,  # Код ЭККА
 ZN        VARCHAR(16), # Заводской номер

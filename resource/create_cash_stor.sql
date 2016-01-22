@@ -1,13 +1,13 @@
-#----------------------------------------------------------------------------
-#
-# Script to create cash data storage.
-#
-# (C) T&T team, Kiev, Ukraine 2016.<br>
-# started 22.01.2016  9:32:22<br>
-# @author oleg
-# @version 0.01
-#
-#----------------------------------------------------------------------------*/
+----------------------------------------------------------------------------
+--
+-- Script to create cash data storage.
+--
+-- (C) T&T team, Kiev, Ukraine 2016.<br>
+-- started 22.01.2016  9:32:22<br>
+-- @author oleg
+-- @version 0.01
+--
+------------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS PLU_REV(
 ROWID INTEGER NOT NULL PRIMARY KEY,
 C INTEGER,
@@ -27,18 +27,42 @@ TX2 INTEGER,
 );
 
 
-CREATE TRIGGER IF NOT EXISTS PLU_INSERT AFTER INSERT ON PLU
+CREATE TRIGGER IF NOT EXISTS PLU_INSERT AFTER INSERT ON PLU FOR EACH ROW
 BEGIN
   INSERT INTO PLU_REV(C,CHANGES) VALUES(NEW.C, DATETIME('now'));
   UPDATE PLU SET REV=LAST_INSERT_ROWID() WHERE C = NEW.C;
 END;
 
-CREATE TRIGGER IF NOT EXISTS PLU_UPDATE AFTER UPDATE OF NM,DEL,NM,GRP,DPT,TX,TX2,"DEC" ON PLU
+CREATE TRIGGER IF NOT EXISTS PLU_UPDATE AFTER UPDATE OF DEL,NM,GRP,DPT,TX,TX2,"DEC" ON PLU FOR EACH ROW
 BEGIN
-  INSERT INTO PLU_REV(C,CHANGES) VALUES(NEW.C, DATETIME('now'));
-  UPDATE PLU SET REV=LAST_INSERT_ROWID() WHERE C = NEW.C;
+  INSERT INTO PLU_REV(C,CHANGES)
+    SELECT NEW.C, DATETIME('now') WHERE 
+            OLD.DEL <> NEW.DEL
+        OR  OLD.NM <> NEW.NM
+        OR  OLD.GRP <> NEW.GRP
+        OR  OLD.DPT <> NEW.DPT
+        OR  OLD.TX <> NEW.TX
+        OR  OLD.TX2 <> NEW.TX2
+        OR  OLD."DEC" <> NEW."DEC"
+        ;
+
+    UPDATE PLU SET REV=(
+    CASE WHEN 
+        (OLD.DEL <> NEW.DEL
+        OR  OLD.NM <> NEW.NM
+        OR  OLD.GRP <> NEW.GRP
+        OR  OLD.DPT <> NEW.DPT
+        OR  OLD.TX <> NEW.TX
+        OR  OLD.TX2 <> NEW.TX2
+        OR  OLD."DEC" <> NEW."DEC"
+        )
+        THEN LAST_INSERT_ROWID()
+        ELSE OLD.REV
+    END)
+    WHERE C = NEW.C
+    ;
 END;
-#----------------------------------------------------------------------------*/
+------------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS PRC_REV(
 ROWID INTEGER NOT NULL PRIMARY KEY,
 C INTEGER,
@@ -53,18 +77,26 @@ PRC DOUBLE
 );
 
 
-CREATE TRIGGER IF NOT EXISTS PRC_INSERT AFTER INSERT ON PRC
+CREATE TRIGGER IF NOT EXISTS PRC_INSERT AFTER INSERT ON PRC FOR EACH ROW
 BEGIN
   INSERT INTO PRC_REV(C,CHANGES) VALUES(NEW.C, DATETIME('now'));
   UPDATE PRC SET REV=LAST_INSERT_ROWID() WHERE C = NEW.C;
 END;
 
-CREATE TRIGGER IF NOT EXISTS PRC_UPDATE AFTER UPDATE OF PRC, DEL ON PRC
+CREATE TRIGGER IF NOT EXISTS PRC_UPDATE AFTER UPDATE OF DEL, PRC ON PRC FOR EACH ROW
 BEGIN
-  INSERT INTO PRC_REV(C,CHANGES) VALUES(NEW.C, DATETIME('now'));
-  UPDATE PRC SET REV=LAST_INSERT_ROWID() WHERE C = NEW.C;
+  INSERT INTO PRC_REV(C,CHANGES)
+    SELECT NEW.C, DATETIME('now') WHERE OLD.DEL <> NEW.DEL OR OLD.PRC <> NEW.PRC;
+
+    UPDATE PRC SET REV=(
+    CASE WHEN (OLD.DEL <> NEW.DEL OR OLD.PRC <> NEW.PRC)
+        THEN LAST_INSERT_ROWID()
+        ELSE OLD.REV
+    END)
+    WHERE C = NEW.C
+    ;
 END;
-#----------------------------------------------------------------------------*/
+------------------------------------------------------------------------------*/
 CREATE TABLE IF NOT EXISTS GRP_REV(
 ROWID INTEGER NOT NULL PRIMARY KEY,
 C INTEGER,
@@ -79,30 +111,26 @@ NM TEXT
 );
 
 
-CREATE TRIGGER IF NOT EXISTS GRP_INSERT AFTER INSERT ON GRP
+CREATE TRIGGER IF NOT EXISTS GRP_INSERT AFTER INSERT ON GRP FOR EACH ROW
 BEGIN
   INSERT INTO GRP_REV(C,CHANGES) VALUES(NEW.C, DATETIME('now'));
   UPDATE GRP SET REV=LAST_INSERT_ROWID() WHERE C = NEW.C;
-END; 
+END;
 
-CREATE TRIGGER IF NOT EXISTS GRP_UPDATE AFTER UPDATE OF NM, DEL ON GRP
+CREATE TRIGGER IF NOT EXISTS GRP_UPDATE AFTER UPDATE OF DEL, NM ON GRP FOR EACH ROW
 BEGIN
-  INSERT INTO GRP_REV(C,CHANGES) 
-    SELECT NEW.C, DATETIME('now') WHERE
-     (CASE WHEN(OLD.NM <> NEW.NM) #if new != old 
-       THEN (1=1)                 #insert 1 row
-       ELSE (1=0)                 #else 0 row
-      END)
-     ;
-  UPDATE GRP SET REV=(
-    CASE WHEN (OLD.NM <> NEW.NM) 
-	THEN LAST_INSERT_ROWID()
-	ELSE OLD.REV
-    END) 
+  INSERT INTO GRP_REV(C,CHANGES)
+    SELECT NEW.C, DATETIME('now') WHERE OLD.DEL <> NEW.DEL OR OLD.NM <> NEW.NM;
+
+    UPDATE GRP SET REV=(
+    CASE WHEN (OLD.DEL <> NEW.DEL OR OLD.NM <> NEW.NM)
+        THEN LAST_INSERT_ROWID()
+        ELSE OLD.REV
+    END)
     WHERE C = NEW.C
     ;
-END; 
-#----------------------------------------------------------------------------*/
+END;
+------------------------------------------------------------------------------*/
 CREATE TABLE IF NOT EXISTS DPT_REV(
 ROWID INTEGER NOT NULL PRIMARY KEY,
 C INTEGER,
@@ -117,18 +145,26 @@ NM TEXT
 );
 
 
-CREATE TRIGGER IF NOT EXISTS DPT_INSERT AFTER INSERT ON DPT
+CREATE TRIGGER IF NOT EXISTS DPT_INSERT AFTER INSERT ON DPT FOR EACH ROW
 BEGIN
   INSERT INTO DPT_REV(C,CHANGES) VALUES(NEW.C, DATETIME('now'));
   UPDATE DPT SET REV=LAST_INSERT_ROWID() WHERE C = NEW.C;
 END;
 
-CREATE TRIGGER IF NOT EXISTS DPT_UPDATE AFTER UPDATE OF NM, DEL ON DPT
+CREATE TRIGGER IF NOT EXISTS DPT_UPDATE AFTER UPDATE OF NM, DEL ON DPT FOR EACH ROW
 BEGIN
-  INSERT INTO DPT_REV(C,CHANGES) VALUES(NEW.C, DATETIME('now'));
-  UPDATE DPT SET REV=LAST_INSERT_ROWID() WHERE C = NEW.C;
+  INSERT INTO DPT_REV(C,CHANGES)
+    SELECT NEW.C, DATETIME('now') WHERE OLD.DEL <> NEW.DEL OR OLD.NM <> NEW.NM;
+
+    UPDATE DPT SET REV=(
+    CASE WHEN (OLD.DEL <> NEW.DEL OR OLD.NM <> NEW.NM)
+        THEN LAST_INSERT_ROWID()
+        ELSE OLD.REV
+    END)
+    WHERE C = NEW.C
+    ;
 END;
-#----------------------------------------------------------------------------*/
+------------------------------------------------------------------------------*/
 CREATE TABLE IF NOT EXISTS BAR_REV(
 ROWID INTEGER NOT NULL PRIMARY KEY,
 ID INTEGER,
@@ -144,15 +180,31 @@ C INTEGER
 );
 
 
-CREATE TRIGGER IF NOT EXISTS BAR_INSERT AFTER INSERT ON BAR
+CREATE TRIGGER IF NOT EXISTS BAR_INSERT AFTER INSERT ON BAR FOR EACH ROW
 BEGIN
   INSERT INTO BAR_REV(ID,CHANGES) VALUES(NEW.ID, DATETIME('now'));
   UPDATE BAR SET REV=LAST_INSERT_ROWID() WHERE ID = NEW.ID;
 END;
 
-CREATE TRIGGER IF NOT EXISTS BAR_UPDATE AFTER UPDATE OF CD, C, DEL ON DPT
+CREATE TRIGGER IF NOT EXISTS BAR_UPDATE AFTER UPDATE OF ID, DEL, CD, C ON BAR FOR EACH ROW
 BEGIN
-  INSERT INTO BAR_REV(ID,CHANGES) VALUES(NEW.ID, DATETIME('now'));
-  UPDATE BAR SET REV=LAST_INSERT_ROWID() WHERE ID = NEW.ID;
+  INSERT INTO BAR_REV(ID,CHANGES)
+    SELECT NEW.ID, DATETIME('now') WHERE 
+        OLD.DEL <> NEW.DEL 
+     OR OLD.CD <> NEW.CD
+     OR OLD.C <> NEW.C
+     ;
+
+    UPDATE BAR SET REV=(
+    CASE WHEN (
+        OLD.DEL <> NEW.DEL 
+     OR OLD.CD <> NEW.CD
+     OR OLD.C <> NEW.C
+     )
+        THEN LAST_INSERT_ROWID()
+        ELSE OLD.REV
+    END)
+    WHERE ID = NEW.ID
+    ;
 END;
-#----------------------------------------------------------------------------*/
+------------------------------------------------------------------------------*/
