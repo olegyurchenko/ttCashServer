@@ -22,6 +22,8 @@
 #include "xmlresponse.h"
 /*----------------------------------------------------------------------------*/
 class KsefDatabase;
+class StoreDatabase;
+class UserStrorage;
 class XmlServer : public QObject
 {
   Q_OBJECT
@@ -32,10 +34,19 @@ public:
   void service(XmlRequest& request, XmlResponse& response);
   bool isKsefError() const {return mIsKsefError;}
   QString ksefMessage() {return mKsefMessage;}
+  bool isStoreError() const {return mIsStoreError;}
+  QString storeMessage() {return mStoreMessage;}
 protected:
   bool mIsKsefError;
   QString mKsefMessage;
   KsefDatabase *ksefDatabase;
+
+  bool mIsStoreError;
+  QString mStoreMessage;
+  StoreDatabase *storeDatabase;
+
+  UserStrorage *mUserStorage;
+
 
   void methodRegister(XmlRequest& request, XmlResponse& response);
   void methodUpload(XmlRequest& request, XmlResponse& response);

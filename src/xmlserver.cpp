@@ -15,6 +15,8 @@
 #include "xmlserver.h"
 #include "ksef_database.h"
 #include "ksef_document.h"
+#include "store_database.h"
+#include "users.h"
 /*----------------------------------------------------------------------------*/
 XmlServer :: XmlServer(QSettings *settings, QObject *parent)
   : QObject(parent)
@@ -32,6 +34,21 @@ XmlServer :: XmlServer(QSettings *settings, QObject *parent)
   {
     mIsKsefError = false;
   }
+
+  storeDatabase = new StoreDatabase(settings, this);
+  if(storeDatabase->isError())
+  {
+    mIsStoreError = true;
+    mStoreMessage = QString("Error open Store database:%1").arg(storeDatabase->message());
+    delete storeDatabase;
+    storeDatabase = NULL;
+  }
+  else
+  {
+    mIsStoreError = false;
+  }
+
+  mUserStorage = new UserStrorage(settings, this);
 }
 /*----------------------------------------------------------------------------*/
 XmlServer :: ~XmlServer()
@@ -75,6 +92,13 @@ void XmlServer :: methodRegister(XmlRequest& request, XmlResponse& response)
     return;
   }
 
+  User user = mUserStorage->user(request.userName(), request.password());
+  if(!user.ksef.write)
+  {
+    response.setStatus(XmlResponse::accessDenied, QString("Access denied for user '%1'").arg(user.name));
+    return;
+  }
+
   KsefDocument doc;
 
   QDomElement data = request.data();
@@ -84,6 +108,7 @@ void XmlServer :: methodRegister(XmlRequest& request, XmlResponse& response)
   if(e.isNull() || !doc.assign(e))
   {
     response.setStatus(XmlResponse::InvalidQuery, "Invalid query");
+    return;
   }
 
 
@@ -97,6 +122,13 @@ void XmlServer :: methodUpload(XmlRequest& request, XmlResponse& response)
   if(isKsefError() || ksefDatabase == NULL)
   {
     response.setStatus(XmlResponse::InternalError, ksefMessage());
+    return;
+  }
+
+  User user = mUserStorage->user(request.userName(), request.password());
+  if(!user.ksef.write)
+  {
+    response.setStatus(XmlResponse::accessDenied, QString("Access denied for user '%1'").arg(user.name));
     return;
   }
 
@@ -115,13 +147,28 @@ void XmlServer :: methodUpload(XmlRequest& request, XmlResponse& response)
     if(!ksefDatabase->cashAddDoc(doc, response))
       response.setStatus(XmlResponse::InternalError, ksefDatabase->message());
 
-    e = e.nextSiblingElement();
+    e = e.nextSiblingElement("DAT");
   }
 
 }
 /*----------------------------------------------------------------------------*/
 void XmlServer :: methodDownload(XmlRequest& request, XmlResponse& response)
 {
+  if(isStoreError() || storeDatabase == NULL)
+  {
+    response.setStatus(XmlResponse::InternalError, storeMessage());
+    return;
+  }
+
+  User user = mUserStorage->user(request.userName(), request.password());
+  if(!user.store.read)
+  {
+    response.setStatus(XmlResponse::accessDenied, QString("Access denied for user '%1'").arg(user.name));
+    return;
+  }
+
+  if(!storeDatabase->download(request, response))
+    response.setStatus(XmlResponse::InternalError, storeDatabase->message());
 }
 /*----------------------------------------------------------------------------*/
 

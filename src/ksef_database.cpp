@@ -259,6 +259,7 @@ bool KsefDatabase :: error(const QSqlQuery &q)
   if(q.lastError().isValid())
   {
     mMessage = QString("%1:\n'%2'").arg(q.lastError().text()).arg(q.lastQuery());
+    qCritical("KsefDatabase:%s", qPrintable(mMessage));
     mIsError = true;
     return true;
   }

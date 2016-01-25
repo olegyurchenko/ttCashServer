@@ -27,7 +27,7 @@ void CashRequestHandler :: service(HttpRequest& request, HttpResponse& response)
   XmlRequest xmlRequest;
   XmlResponse xmlResponse;
 
-
+  qDebug("request:%s", qPrintable(request.getBody()));
   if(xmlRequest.parse(request.getBody(), xmlResponse))
   {
     QByteArray auth = request.getHeader("Authorization");

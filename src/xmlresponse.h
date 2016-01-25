@@ -29,6 +29,7 @@ public:
     ParserError = 1,
     InvalidMethod = 2,
     InvalidQuery = 3,
+    accessDenied = 4,
     InternalError = 100,
     UnknownError = -1
   } Status;
