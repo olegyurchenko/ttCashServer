@@ -51,6 +51,7 @@ protected:
   void methodRegister(XmlRequest& request, XmlResponse& response);
   void methodUpload(XmlRequest& request, XmlResponse& response);
   void methodDownload(XmlRequest& request, XmlResponse& response);
+  void methodUpdate(XmlRequest& request, XmlResponse& response);
 };
 /*----------------------------------------------------------------------------*/
 #endif /*XMLSERVER_H_1452963044*/

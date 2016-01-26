@@ -9,7 +9,7 @@
 * started 23.01.2016 16:42:47<br>
 * @pkgdoc store_database
 * @author oleg
-* @version 0.01 
+* @version 0.01
 */
 /*----------------------------------------------------------------------------*/
 #include "store_database.h"
@@ -223,6 +223,196 @@ bool StoreDatabase :: downloadTable(QSqlQuery &q, XmlResponse& response, const Q
     item.appendChild(e);
     response.data().appendChild(item);
     -- *recordCount;
+  }
+  return true;
+}
+/*----------------------------------------------------------------------------*/
+bool StoreDatabase :: update(XmlRequest &request, XmlResponse&)
+{
+  QDomElement set = request.data().firstChildElement("RQ").firstChildElement("SET");
+
+
+  QDomElement e = set.firstChildElement();
+  QSqlQuery q(QSqlDatabase::database(mConnectionName));
+  bool ok = q.exec("BEGIN TRANSACTION");
+  while(!e.isNull() && ok)
+  {
+    if(e.tagName() == "GRP")
+    {
+      QDomElement ee = e.firstChildElement();
+      QVariantHash v;
+      v["DEL"] = e.attribute("DEL", "0").toInt();
+      while(!ee.isNull())
+      {
+        if(ee.tagName() == "C")
+          v["C"] = ee.text().toInt();
+        if(ee.tagName() == "NM")
+          v["NM"] = ee.text();
+        ee = ee.nextSiblingElement();
+      }
+      ok = updateItem("GRP", "C", v);
+    }
+    if(e.tagName() == "DPT")
+    {
+      QDomElement ee = e.firstChildElement();
+      QVariantHash v;
+      v["DEL"] = e.attribute("DEL", "0").toInt();
+      while(!ee.isNull())
+      {
+        if(ee.tagName() == "C")
+          v["C"] = ee.text().toInt();
+        if(ee.tagName() == "NM")
+          v["NM"] = ee.text();
+        ee = ee.nextSiblingElement();
+      }
+      ok = updateItem("DPT", "C", v);
+    }
+    if(e.tagName() == "PLU")
+    {
+      QDomElement ee = e.firstChildElement();
+      QVariantHash v;
+      v["DEL"] = e.attribute("DEL", "0").toInt();
+      while(!ee.isNull())
+      {
+        if(ee.tagName() == "C")
+          v["C"] = ee.text().toInt();
+        if(ee.tagName() == "NM")
+          v["NM"] = ee.text();
+        if(ee.tagName() == "GRP")
+          v["GRP"] = ee.text().toInt();
+        if(ee.tagName() == "DPT")
+          v["DPT"] = ee.text().toInt();
+        if(ee.tagName() == "TX")
+          v["TX"] = ee.text().toInt();
+        if(ee.tagName() == "TX2")
+          v["TX2"] = ee.text().toInt() - 1;
+        if(ee.tagName() == "DEC")
+          v["DEC"] = ee.text().toInt();
+
+        ee = ee.nextSiblingElement();
+      }
+      ok = updateItem("PLU", "C", v);
+    }
+    if(e.tagName() == "PRC")
+    {
+      QDomElement ee = e.firstChildElement();
+      QVariantHash v;
+      v["DEL"] = e.attribute("DEL", "0").toInt();
+
+      while(!ee.isNull())
+      {
+        if(ee.tagName() == "C")
+          v["C"] = ee.text().toInt();
+        if(ee.tagName() == "PRC")
+          v["PRC"] = ee.text().toDouble();
+
+        ee = ee.nextSiblingElement();
+      }
+      ok = updateItem("PRC", "C", v);
+    }
+    if(e.tagName() == "BAR")
+    {
+      QDomElement ee = e.firstChildElement();
+      QVariantHash v;
+      v["DEL"] = e.attribute("DEL", "0").toInt();
+      while(!ee.isNull())
+      {
+        if(ee.tagName() == "CD")
+          v["CD"] = ee.text();
+        if(ee.tagName() == "C")
+          v["C"] = ee.text().toInt();
+        ee = ee.nextSiblingElement();
+      }
+      ok = updateItem("BAR", "CD", v);
+    }
+    if(e.tagName() == "EMT")
+    {
+      //TODO !!!
+    }
+    if(e.tagName() == "CNT")
+    {
+      //TODO !!!
+    }
+    e = e.nextSiblingElement();
+  }
+
+  if(ok)
+    q.exec("COMMIT");
+  else
+    q.exec("ROLLBACK");
+
+  return ok;
+}
+/*----------------------------------------------------------------------------*/
+bool StoreDatabase :: updateItem(const QString& tableName, const QString& primaryKey,  const QVariantHash &v)
+{
+  QSqlQuery q(QSqlDatabase::database(mConnectionName));
+
+  q.prepare(QString("select \"%1\" from \"%2\" where \"%3\" = ?").arg(primaryKey).arg(tableName).arg(primaryKey));
+  q.addBindValue(v[primaryKey]);
+
+  if(!q.exec())
+  {
+    error(q);
+    return false;
+  }
+
+  if(q.first())
+  {
+    QString sql = QString("update \"%1\" set ").arg(tableName);
+
+    bool comma = false;
+    for(QVariantHash::ConstIterator it = v.begin(); it != v.end(); ++it)
+    {
+      if(it.key() != primaryKey)
+      {
+        if(comma)
+          sql += ",";
+        comma = true;
+        sql += QString("\"%1\" = ? ").arg(it.key());
+      }
+    }
+
+    sql += QString("where \"%1\" = ?").arg(primaryKey);
+    q.prepare(sql);
+    for(QVariantHash::ConstIterator it = v.begin(); it != v.end(); ++it)
+    {
+      if(it.key() != primaryKey)
+      {
+        q.addBindValue(it.value());
+      }
+    }
+    q.addBindValue(v[primaryKey]);
+  }
+  else
+  {
+    QString sql = QString("insert into \"%1\"(").arg(tableName);
+    for(QVariantHash::ConstIterator it = v.begin(); it != v.end(); ++it)
+    {
+      if(it != v.begin())
+        sql += ",";
+      sql += QString("\"%1\"").arg(it.key());
+    }
+
+    sql += ") values(";
+    for(QVariantHash::ConstIterator it = v.begin(); it != v.end(); ++it)
+    {
+      if(it != v.begin())
+        sql += ",";
+      sql += "?";
+    }
+    sql += ")";
+    q.prepare(sql);
+    for(QVariantHash::ConstIterator it = v.begin(); it != v.end(); ++it)
+    {
+      q.addBindValue(it.value());
+    }
+  }
+
+  if(!q.exec())
+  {
+    error(q);
+    return false;
   }
   return true;
 }

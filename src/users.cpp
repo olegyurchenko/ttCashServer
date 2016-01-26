@@ -9,10 +9,11 @@
 * started 25.01.2016 12:02:31<br>
 * @pkgdoc users
 * @author oleg
-* @version 0.01 
+* @version 0.01
 */
 /*----------------------------------------------------------------------------*/
 #include "users.h"
+#include <QStringList>
 /*----------------------------------------------------------------------------*/
 UserStrorage :: UserStrorage(QSettings *settings, QObject *parent)
   : QObject(parent)

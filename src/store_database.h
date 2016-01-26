@@ -9,7 +9,7 @@
 * started 23.01.2016 16:42:47<br>
 * @pkgdoc store_database
 * @author oleg
-* @version 0.01 
+* @version 0.01
 */
 /*----------------------------------------------------------------------------*/
 #ifndef STORE_DATABASE_H_1453560167
@@ -31,6 +31,7 @@ public:
   QString message() {return mMessage;}
 
   bool download(XmlRequest &request, XmlResponse& response);
+  bool update(XmlRequest &request, XmlResponse& response);
 
 protected:
 //TODO: Check size
@@ -43,6 +44,7 @@ protected:
   bool error(const QSqlQuery &q);
   bool create();
   bool downloadTable(QSqlQuery &q, XmlResponse& response, const QString& tableName, int *recordCount);
+  bool updateItem(const QString& tableName, const QString& primaryKey,  const QVariantHash &v);
 };
 
 /*----------------------------------------------------------------------------*/

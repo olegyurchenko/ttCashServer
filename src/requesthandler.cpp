@@ -17,7 +17,8 @@ RequestHandler::RequestHandler(QSettings* webSettings, QSettings* cashSettings, 
   mCashPathList << "/register"
                 << "/upload"
                 << "/download"
-                << "/sync";
+                << "/sync"
+                << "/update";
   mWebRequestHandler = new WebRequestHandler(webSettings, this);
   mCashRequestHandler = new CashRequestHandler(cashSettings, this);
 }

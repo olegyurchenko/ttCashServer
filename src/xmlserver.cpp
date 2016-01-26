@@ -79,8 +79,13 @@ void XmlServer :: service(XmlRequest& request, XmlResponse& response)
       methodDownload(request, response);
   }
   else
+  if(request.method() == "update")
   {
-    response.setStatus(XmlResponse::InvalidMethod, QString("Invalid methos '%1'").arg(request.method()) );
+    methodUpdate(request, response);
+  }
+  else
+  {
+    response.setStatus(XmlResponse::InvalidMethod, QString("Invalid method '%1'").arg(request.method()) );
   }
 }
 /*----------------------------------------------------------------------------*/
@@ -168,6 +173,24 @@ void XmlServer :: methodDownload(XmlRequest& request, XmlResponse& response)
   }
 
   if(!storeDatabase->download(request, response))
+    response.setStatus(XmlResponse::InternalError, storeDatabase->message());
+}
+/*----------------------------------------------------------------------------*/
+void XmlServer :: methodUpdate(XmlRequest& request, XmlResponse& response)
+{
+  if(isStoreError() || storeDatabase == NULL)
+  {
+    response.setStatus(XmlResponse::InternalError, storeMessage());
+    return;
+  }
+
+  User user = mUserStorage->user(request.userName(), request.password());
+  if(!user.store.write)
+  {
+    response.setStatus(XmlResponse::accessDenied, QString("Access denied for user '%1'").arg(user.name));
+    return;
+  }
+  if(!storeDatabase->update(request, response))
     response.setStatus(XmlResponse::InternalError, storeDatabase->message());
 }
 /*----------------------------------------------------------------------------*/
