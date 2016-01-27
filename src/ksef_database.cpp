@@ -46,7 +46,7 @@ KsefDatabase :: KsefDatabase(QSettings *settings, QObject *parent)
 
   mConnectionName = QString("%1_%2").arg(CONNECTION_NAME).arg(++m_unique);
 
-  mFileName = dir.filePath("ksef.sqlite");
+  mFileName = dir.filePath("ksef.db");
   qDebug("KsefDatabase: fileName=%s, maxSize=%lld",qPrintable(mFileName), mMaxSize);
 
 

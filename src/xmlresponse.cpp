@@ -75,7 +75,7 @@ void XmlResponse :: setMessage(const QString& m)
 QByteArray XmlResponse :: toByteArray()
 {
   QByteArray s = mDoc.toByteArray(0);
-  qDebug("xml:%s", qPrintable(s));
+  //qDebug("xml:%s", qPrintable(s));
   return s;
 }
 /*----------------------------------------------------------------------------*/

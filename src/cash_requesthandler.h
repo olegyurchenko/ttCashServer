@@ -27,7 +27,10 @@ public:
     CashRequestHandler(QSettings* settings, QObject* parent=0);
     void service(HttpRequest& request, HttpResponse& response);
 protected:
-  XmlServer *mXmlServer;
+    void saveXml(bool request, const QByteArray& content);
+    XmlServer *mXmlServer;
+    QString mLogName; //Path to request/response logs
+    qlonglong mMaxFileSize;
 };
 /*----------------------------------------------------------------------------*/
 #endif /*CASH_REQUESTHANDLER_H_1452927871*/

@@ -48,7 +48,7 @@ StoreDatabase :: StoreDatabase(QSettings *settings, QObject *parent)
 
   mConnectionName = QString("%1_%2").arg(CONNECTION_NAME).arg(++m_unique);
 
-  mFileName = dir.filePath("store.sqlite");
+  mFileName = dir.filePath("store.db");
   qDebug("StoreDatabase: fileName=%s, maxSize=%lld",qPrintable(mFileName), mMaxSize);
 
 
@@ -184,6 +184,22 @@ bool StoreDatabase :: download(XmlRequest &request, XmlResponse& response)
         if(!downloadTable(q, response, "BAR", &recordCount))
           return false;
       }
+      if(e.tagName() == "EMT")
+      {
+        q.prepare("select REV,DEL,C,F,NM from EMT where REV > ? order by REV, C LIMIT ?");
+        q.addBindValue(revision);
+        q.addBindValue(recordCount);
+        if(!downloadTable(q, response, "EMT", &recordCount))
+          return false;
+      }
+      if(e.tagName() == "CNT")
+      {
+        q.prepare("select REV,DEL,PAN,NM,EMT,PF,F,PLU,BAL,PRC from CNT where REV > ? order by REV, ROWID LIMIT ?");
+        q.addBindValue(revision);
+        q.addBindValue(recordCount);
+        if(!downloadTable(q, response, "CNT", &recordCount))
+          return false;
+      }
       e = e.nextSiblingElement();
     }
   }
@@ -237,6 +253,8 @@ bool StoreDatabase :: update(XmlRequest &request, XmlResponse&)
   bool ok = q.exec("BEGIN TRANSACTION");
   while(!e.isNull() && ok)
   {
+    bool del = e.attribute("DEL", "0").toInt();
+
     if(e.tagName() == "GRP")
     {
       QDomElement ee = e.firstChildElement();
@@ -246,7 +264,7 @@ bool StoreDatabase :: update(XmlRequest &request, XmlResponse&)
       {
         if(ee.tagName() == "C")
           v["C"] = ee.text().toInt();
-        if(ee.tagName() == "NM")
+        if(ee.tagName() == "NM" && !del)
           v["NM"] = ee.text();
         ee = ee.nextSiblingElement();
       }
@@ -261,7 +279,7 @@ bool StoreDatabase :: update(XmlRequest &request, XmlResponse&)
       {
         if(ee.tagName() == "C")
           v["C"] = ee.text().toInt();
-        if(ee.tagName() == "NM")
+        if(ee.tagName() == "NM" && !del)
           v["NM"] = ee.text();
         ee = ee.nextSiblingElement();
       }
@@ -276,17 +294,17 @@ bool StoreDatabase :: update(XmlRequest &request, XmlResponse&)
       {
         if(ee.tagName() == "C")
           v["C"] = ee.text().toInt();
-        if(ee.tagName() == "NM")
+        if(ee.tagName() == "NM" && !del)
           v["NM"] = ee.text();
-        if(ee.tagName() == "GRP")
+        if(ee.tagName() == "GRP" && !del)
           v["GRP"] = ee.text().toInt();
-        if(ee.tagName() == "DPT")
+        if(ee.tagName() == "DPT" && !del)
           v["DPT"] = ee.text().toInt();
-        if(ee.tagName() == "TX")
+        if(ee.tagName() == "TX" && !del)
           v["TX"] = ee.text().toInt();
-        if(ee.tagName() == "TX2")
+        if(ee.tagName() == "TX2" && !del)
           v["TX2"] = ee.text().toInt() - 1;
-        if(ee.tagName() == "DEC")
+        if(ee.tagName() == "DEC" && !del)
           v["DEC"] = ee.text().toInt();
 
         ee = ee.nextSiblingElement();
@@ -303,7 +321,7 @@ bool StoreDatabase :: update(XmlRequest &request, XmlResponse&)
       {
         if(ee.tagName() == "C")
           v["C"] = ee.text().toInt();
-        if(ee.tagName() == "PRC")
+        if(ee.tagName() == "PRC" && !del)
           v["PRC"] = ee.text().toDouble();
 
         ee = ee.nextSiblingElement();
@@ -319,7 +337,7 @@ bool StoreDatabase :: update(XmlRequest &request, XmlResponse&)
       {
         if(ee.tagName() == "CD")
           v["CD"] = ee.text();
-        if(ee.tagName() == "C")
+        if(ee.tagName() == "C" && !del)
           v["C"] = ee.text().toInt();
         ee = ee.nextSiblingElement();
       }
@@ -327,11 +345,47 @@ bool StoreDatabase :: update(XmlRequest &request, XmlResponse&)
     }
     if(e.tagName() == "EMT")
     {
-      //TODO !!!
+      QDomElement ee = e.firstChildElement();
+      QVariantHash v;
+      v["DEL"] = e.attribute("DEL", "0").toInt();
+      while(!ee.isNull())
+      {
+        if(ee.tagName() == "C")
+          v["C"] = ee.text().toInt();
+        if(ee.tagName() == "F" && !del)
+          v["F"] = ee.text().toInt();
+        if(ee.tagName() == "NM" && !del)
+          v["NM"] = ee.text();
+        ee = ee.nextSiblingElement();
+      }
+      ok = updateItem("EMT", "C", v);
     }
     if(e.tagName() == "CNT")
     {
-      //TODO !!!
+      QDomElement ee = e.firstChildElement();
+      QVariantHash v;
+      v["DEL"] = e.attribute("DEL", "0").toInt();
+      while(!ee.isNull())
+      {
+        if(ee.tagName() == "PAN")
+          v["PAN"] = ee.text();
+        if(ee.tagName() == "NM" && !del)
+          v["NM"] = ee.text();
+        if(ee.tagName() == "EMT" && !del)
+          v["EMT"] = ee.text().toInt();
+        if(ee.tagName() == "PF" && !del)
+          v["PF"] = ee.text().toInt();
+        if(ee.tagName() == "F" && !del)
+          v["F"] = ee.text().toInt();
+        if(ee.tagName() == "PLU" && !del)
+          v["PLU"] = ee.text().toInt();
+        if(ee.tagName() == "BAL" && !del)
+          v["BAL"] = ee.text().toDouble();
+        if(ee.tagName() == "PRC" && !del)
+          v["PRC"] = ee.text().toDouble();
+        ee = ee.nextSiblingElement();
+      }
+      ok = updateItem("CNT", "PAN", v);
     }
     e = e.nextSiblingElement();
   }

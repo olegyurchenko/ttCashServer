@@ -15,11 +15,22 @@
 #include "cash_requesthandler.h"
 #include "xmlrequest.h"
 #include "xmlresponse.h"
+#include <QFile>
+#include <QDateTime>
+#include <QDir>
 /*----------------------------------------------------------------------------*/
 CashRequestHandler :: CashRequestHandler(QSettings* settings, QObject* parent)
   : HttpRequestHandler(parent)
 {
   mXmlServer = new XmlServer(settings, this);
+  settings->endGroup();
+  mLogName = settings->value("logging/xmlLog","xml.log").toString();
+  mMaxFileSize = settings->value("logging/maxSize","104857600").toLongLong(); //100M
+  if (QDir::isRelativePath(mLogName))
+  {
+    QFileInfo configFile(settings->fileName());
+    mLogName = QFileInfo(configFile.absolutePath(),mLogName).absoluteFilePath();
+  }
 }
 /*----------------------------------------------------------------------------*/
 void CashRequestHandler :: service(HttpRequest& request, HttpResponse& response)
@@ -27,7 +38,8 @@ void CashRequestHandler :: service(HttpRequest& request, HttpResponse& response)
   XmlRequest xmlRequest;
   XmlResponse xmlResponse;
 
-  qDebug("request:%s", qPrintable(request.getBody()));
+  //qDebug("request:%s", qPrintable(request.getBody()));
+  saveXml(true, request.getBody());
   if(xmlRequest.parse(request.getBody(), xmlResponse))
   {
     QByteArray auth = request.getHeader("Authorization");
@@ -47,8 +59,26 @@ void CashRequestHandler :: service(HttpRequest& request, HttpResponse& response)
     mXmlServer->service(xmlRequest, xmlResponse);
   }
 
+  saveXml(false, xmlResponse.toByteArray());
   response.setHeader("Content-Type", "text/xml; charset=utf8");
   response.write(xmlResponse.toByteArray(), true);
+}
+/*----------------------------------------------------------------------------*/
+void CashRequestHandler :: saveXml(bool request, const QByteArray& content)
+{
+  if(!mMaxFileSize)
+    return;
+  QFile f(mLogName);
+  if(f.size() >= mMaxFileSize)
+    f.remove();
+  if(f.open(QIODevice::WriteOnly  | QIODevice::Append | QIODevice::Text))
+  {
+    f.seek(f.size());
+    QString h = QString("%1 %2\n").arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh-mm-ss-zzz")).arg(request ? ">>>" : "<<<");
+    f.write(h.toLatin1());
+    f.write(content);
+    f.close();
+  }
 }
 /*----------------------------------------------------------------------------*/
 
