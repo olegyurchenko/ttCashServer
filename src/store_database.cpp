@@ -73,7 +73,16 @@ bool StoreDatabase :: error(const QSqlQuery &q)
 {
   if(q.lastError().isValid())
   {
+    QVariantMap m = q.boundValues();
+
     mMessage = QString("%1:\n'%2'").arg(q.lastError().text()).arg(q.lastQuery());
+
+    if(!m.isEmpty())
+      mMessage += "\nBound values:\n";
+
+    for(QVariantMap::Iterator it = m.begin(); it != m.end(); ++it)
+      mMessage += QString("%1 = %2").arg(it.key()).arg(it.value().toString());
+
     qCritical("StoreDatabase:%s", qPrintable(mMessage));
     mIsError = true;
     return true;
@@ -136,6 +145,18 @@ bool StoreDatabase :: create()
 bool StoreDatabase :: download(XmlRequest &request, XmlResponse& response)
 {
   QSqlQuery q(QSqlDatabase::database(mConnectionName));
+
+  QVariantMap newRev = revisionsGet();
+  QDomElement rev = response.doc().createElement("REV");
+  for(QVariantMap::Iterator it = newRev.begin(); it != newRev.end(); ++it)
+  {
+    QDomElement e = response.doc().createElement(it.key());
+    e.setAttribute("REV", it.value().toInt());
+    rev.appendChild(e);
+  }
+  response.data().appendChild(rev);
+
+
   QDomElement getTag = request.data().firstChildElement("RQ").firstChildElement("GET");
   int recordCount = getTag.attribute("RC", "100").toInt();
   if(!getTag.isNull())
@@ -243,11 +264,11 @@ bool StoreDatabase :: downloadTable(QSqlQuery &q, XmlResponse& response, const Q
   return true;
 }
 /*----------------------------------------------------------------------------*/
-bool StoreDatabase :: update(XmlRequest &request, XmlResponse&)
+bool StoreDatabase :: update(XmlRequest &request, XmlResponse &response)
 {
   QDomElement set = request.data().firstChildElement("RQ").firstChildElement("SET");
 
-
+  QVariantMap oldRev = revisionsGet();
   QDomElement e = set.firstChildElement();
   QSqlQuery q(QSqlDatabase::database(mConnectionName));
   bool ok = q.exec("BEGIN TRANSACTION");
@@ -303,7 +324,7 @@ bool StoreDatabase :: update(XmlRequest &request, XmlResponse&)
         if(ee.tagName() == "TX" && !del)
           v["TX"] = ee.text().toInt();
         if(ee.tagName() == "TX2" && !del)
-          v["TX2"] = ee.text().toInt() - 1;
+          v["TX2"] = ee.text().toInt();
         if(ee.tagName() == "DEC" && !del)
           v["DEC"] = ee.text().toInt();
 
@@ -395,6 +416,26 @@ bool StoreDatabase :: update(XmlRequest &request, XmlResponse&)
   else
     q.exec("ROLLBACK");
 
+
+  QDomElement rev = response.doc().createElement("OLD");
+  for(QVariantMap::Iterator it = oldRev.begin(); it != oldRev.end(); ++it)
+  {
+    QDomElement e = response.doc().createElement(it.key());
+    e.setAttribute("REV", it.value().toInt());
+    rev.appendChild(e);
+  }
+  response.data().appendChild(rev);
+
+  QVariantMap newRev = revisionsGet();
+  rev = response.doc().createElement("REV");
+  for(QVariantMap::Iterator it = newRev.begin(); it != newRev.end(); ++it)
+  {
+    QDomElement e = response.doc().createElement(it.key());
+    e.setAttribute("REV", it.value().toInt());
+    rev.appendChild(e);
+  }
+  response.data().appendChild(rev);
+
   return ok;
 }
 /*----------------------------------------------------------------------------*/
@@ -469,6 +510,36 @@ bool StoreDatabase :: updateItem(const QString& tableName, const QString& primar
     return false;
   }
   return true;
+}
+/*----------------------------------------------------------------------------*/
+QVariantMap StoreDatabase :: revisionsGet()
+{
+  QVariantMap m;
+  QStringList tables, entries;
+  tables << "PLU_REV"
+         << "PRC_REV"
+         << "GRP_REV"
+         << "DPT_REV"
+         << "BAR_REV"
+         << "EMT_REV"
+         << "CNT_REV";
+
+  entries << "PLU"
+          << "PRC"
+          << "GRP"
+          << "DPT"
+          << "BAR"
+          << "EMT"
+          << "CNT";
+
+  QSqlQuery q(QSqlDatabase::database(mConnectionName));
+  for(int i = 0; i < tables.size(); i++)
+  {
+    q.prepare(QString("select max(ROWID) from %1").arg(tables.at(i)));
+    if(q.exec() & q.first())
+      m[entries.at(i)] = q.value(0);
+  }
+  return m;
 }
 /*----------------------------------------------------------------------------*/
 

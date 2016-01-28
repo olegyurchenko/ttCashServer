@@ -59,9 +59,11 @@ void CashRequestHandler :: service(HttpRequest& request, HttpResponse& response)
     mXmlServer->service(xmlRequest, xmlResponse);
   }
 
-  saveXml(false, xmlResponse.toByteArray());
+  QByteArray content = xmlResponse.toByteArray();
+  saveXml(false, content);
   response.setHeader("Content-Type", "text/xml; charset=utf8");
-  response.write(xmlResponse.toByteArray(), true);
+  //response.setHeader("Content-Length", content.length());
+  response.write(content, true);
 }
 /*----------------------------------------------------------------------------*/
 void CashRequestHandler :: saveXml(bool request, const QByteArray& content)

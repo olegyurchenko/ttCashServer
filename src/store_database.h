@@ -45,6 +45,7 @@ protected:
   bool create();
   bool downloadTable(QSqlQuery &q, XmlResponse& response, const QString& tableName, int *recordCount);
   bool updateItem(const QString& tableName, const QString& primaryKey,  const QVariantHash &v);
+  QVariantMap revisionsGet();
 };
 
 /*----------------------------------------------------------------------------*/
