@@ -84,6 +84,11 @@ void XmlServer :: service(XmlRequest& request, XmlResponse& response)
     methodUpdate(request, response);
   }
   else
+  if(request.method() == "ksef_get")
+  {
+    methodKsefGet(request, response);
+  }
+  else
   {
     response.setStatus(XmlResponse::InvalidMethod, QString("Invalid method '%1'").arg(request.method()) );
   }
@@ -194,4 +199,22 @@ void XmlServer :: methodUpdate(XmlRequest& request, XmlResponse& response)
     response.setStatus(XmlResponse::InternalError, storeDatabase->message());
 }
 /*----------------------------------------------------------------------------*/
+void XmlServer :: methodKsefGet(XmlRequest& request, XmlResponse& response)
+{
+  if(isKsefError() || ksefDatabase == NULL)
+  {
+    response.setStatus(XmlResponse::InternalError, ksefMessage());
+    return;
+  }
 
+  User user = mUserStorage->user(request.userName(), request.password());
+  if(!user.ksef.read)
+  {
+    response.setStatus(XmlResponse::accessDenied, QString("Access denied for user '%1'").arg(user.name));
+    return;
+  }
+
+  if(!ksefDatabase->query(request, response))
+    response.setStatus(XmlResponse::InternalError, ksefDatabase->message());
+}
+/*----------------------------------------------------------------------------*/

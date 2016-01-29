@@ -22,9 +22,30 @@
 #include <QSqlError>
 #include "ksef_document.h"
 #include "xmlresponse.h"
+#include "xmlrequest.h"
 /*----------------------------------------------------------------------------*/
 #define CONNECTION_NAME "KSEF"
 static int m_unique = 0;
+/*----------------------------------------------------------------------------*/
+class _KsefFilter
+{
+public:
+  QDateTime dateTime;
+  int di;
+  int billNumber;
+  _KsefFilter() : di(-1),billNumber(-1) {}
+};
+
+class KsefFilter
+{
+public:
+  KsefFilter() : billCount(-1), docType(0) {}
+  _KsefFilter from;
+  _KsefFilter to;
+  int billCount;
+  int docType;
+  QStringList crList;
+};
 /*----------------------------------------------------------------------------*/
 KsefDatabase :: KsefDatabase(QSettings *settings, QObject *parent)
   : QThread(parent)
@@ -254,6 +275,157 @@ bool KsefDatabase :: cashAddDoc(const KsefDocument& doc, XmlResponse &response)
   return true;
 }
 /*----------------------------------------------------------------------------*/
+bool KsefDatabase :: query(XmlRequest& request, XmlResponse& response)
+{
+  QSqlQuery q(QSqlDatabase::database(mConnectionName));
+  QDomElement data = request.data();
+  QDomElement e = data.firstChildElement("RQ");
+
+  e = e.firstChildElement();
+
+  while(!e.isNull() && !response.isError())
+  {
+    if(e.tagName() == "CR_GET")
+    {
+      if(!crResponse(response))
+        return false;
+    }
+    if(e.tagName() == "DOC_GET")
+    {
+      KsefFilter f;
+
+      f.billCount = e.attribute("RC", "-1").toInt();
+      f.docType = e.attribute("TY", "0").toInt();
+
+      QDomElement ee = e.firstChildElement("F");
+      if(!ee.isNull())
+      {
+        if(ee.attributes().contains("TS"))
+          f.from.dateTime = KsefDocument::ts2time(ee.attribute("TS"));
+        f.from.billNumber = ee.attribute("DN", "-1").toInt();
+        f.from.di = ee.attribute("DI", "-1").toInt();
+      }
+      ee = e.firstChildElement("T");
+      if(!ee.isNull())
+      {
+        if(ee.attributes().contains("TS"))
+          f.to.dateTime = KsefDocument::ts2time(ee.attribute("TS"));
+        f.to.billNumber = ee.attribute("DN", "-1").toInt();
+        f.to.di = ee.attribute("DI", "-1").toInt();
+      }
+      ee = e.firstChildElement("CR");
+      while(!ee.isNull())
+      {
+        QString zn = ee.attribute("ZN", "");
+        if(!zn.isEmpty())
+          f.crList.append(zn);
+        ee = ee.nextSiblingElement("CR");
+      }
+
+
+      QVariantList values;
+      QString sql;
+
+      sql = "select XML from TAG_DAT ";
+      if(f.docType > 0)
+      {
+        sql += ",TAG_C where TAG_DAT.DAT_ID = TAG_C.DAT_ID ";
+        if(f.docType > 1)
+          sql += "and TAG_C.T>=100 ";
+        else
+          sql += "and TAG_C.T<100 ";
+      }
+      else
+        sql += "where (1=1) ";
+
+      if(f.from.di >= 0)
+      {
+        sql += "and TAG_DAT.DI >= ? ";
+        values.append(f.from.di);
+      }
+
+      if(f.to.di >= 0)
+      {
+        sql += "and TAG_DAT.DI <= ? ";
+        values.append(f.to.di);
+      }
+
+      if(f.from.dateTime.isValid())
+      {
+        sql += "and TAG_DAT.TS >= ? ";
+        values.append(f.from.dateTime);
+      }
+
+      if(f.to.dateTime.isValid())
+      {
+        sql += "and TAG_DAT.TS <= ? ";
+        values.append(f.to.dateTime);
+      }
+
+      if(!f.crList.isEmpty())
+      {
+        sql += "and TAG_DAT.ZN in (";
+        for(int i = 0; i < f.crList.size(); i++)
+        {
+          if(i)
+            sql += ",";
+          sql += "?";
+          values.append(f.crList.at(i));
+        }
+        sql += ") ";
+      }
+
+      if(f.billCount > 0)
+      {
+        sql += "LIMIT ?";
+        values.append(f.billCount);
+      }
+
+      qWarning("SQL='%s'", qPrintable(sql));
+      q.prepare(sql);
+      foreach (QVariant v, values)
+      {
+        q.addBindValue(v);
+      }
+      if(!q.exec())
+        return !error(q);
+
+      if(!datResponse(q, response))
+        return false;
+    }
+
+
+    e = e.nextSiblingElement();
+  }
+  return true;
+}
+/*----------------------------------------------------------------------------*/
+bool KsefDatabase :: crResponse(XmlResponse& response)
+{
+  QSqlQuery q(QSqlDatabase::database(mConnectionName));
+  if(!q.exec("select ZN from CR"))
+    return error(q);
+  while (q.next())
+  {
+    QDomElement e = response.doc().createElement("CR");
+    e.setAttribute("ZN", q.value(0).toString());
+    response.data().appendChild(e);
+  }
+  return true;
+}
+/*----------------------------------------------------------------------------*/
+bool KsefDatabase :: datResponse(QSqlQuery &q, XmlResponse& response)
+{
+  while(q.next())
+  {
+    QDomDocument doc;
+
+    if(doc.setContent(q.value(0).toString()))
+      response.data().appendChild(response.doc().importNode(doc.firstChildElement("DAT"), true));
+  }
+  return true;
+}
+/*----------------------------------------------------------------------------*/
 bool KsefDatabase :: error(const QSqlQuery &q)
 {
   if(q.lastError().isValid())
@@ -365,7 +537,7 @@ void KsefDatabase :: run()
         return;
       }
     }
-    msleep(10);
+    msleep(100);
   }
 }
 /*----------------------------------------------------------------------------*/

@@ -30,6 +30,7 @@ bool XmlRequest :: parse(const QByteArray& src, XmlResponse& response)
   {
     QString msg = QString("XML ParseError %2:%3: %4").arg(errorLine).arg(errorColumn).arg(errMsg);
     response.setStatus(XmlResponse::ParserError, msg);
+    qCritical("%s:`%s`", qPrintable(msg), qPrintable(src));
     return false;
   }
 

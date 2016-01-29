@@ -45,6 +45,9 @@ public:
   QDateTime time() const {return mTime;}
   int di() const {return mDi;}
   const QList<KsefBill> &bills() const {return mBills;}
+
+  static QDateTime ts2time(const QString& src);
+
 };
 /*----------------------------------------------------------------------------*/
 class KsefBillItem;

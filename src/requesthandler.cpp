@@ -18,7 +18,8 @@ RequestHandler::RequestHandler(QSettings* webSettings, QSettings* cashSettings, 
                 << "/upload"
                 << "/download"
                 << "/sync"
-                << "/update";
+                << "/update"
+                << "/ksef_get";
   mWebRequestHandler = new WebRequestHandler(webSettings, this);
   mCashRequestHandler = new CashRequestHandler(cashSettings, this);
 }

@@ -23,6 +23,13 @@ KsefDocument :: ~KsefDocument()
 {
 }
 /*----------------------------------------------------------------------------*/
+QDateTime KsefDocument :: ts2time(const QString& src)
+{
+  QDate d = QDate(src.mid(0, 4).toInt(), src.mid(4, 2).toInt(), src.mid(6, 2).toInt());
+  QTime t = QTime(src.mid(8, 2).toInt(), src.mid(10, 2).toInt(), src.mid(12, 2).toInt());
+  return QDateTime(d, t);
+}
+/*----------------------------------------------------------------------------*/
 bool KsefDocument :: assign(QDomElement& e, bool deep)
 {
   /*
@@ -46,22 +53,7 @@ bool KsefDocument :: assign(QDomElement& e, bool deep)
   QDomElement ts = e.firstChildElement("TS");
   if(!ts.isNull())
   {
-    //YYYYMMDDhhmmss
-    QString t = ts.text();
-    if(t.length() == 14)
-    {
-      int Y; int M; int D;
-      int h, m, s;
-      Y = t.left(4).toInt();
-      M = t.mid(4, 2).toInt();
-      D = t.mid(6, 2).toInt();
-      h = t.mid(8, 2).toInt();
-      m = t.mid(10, 2).toInt();
-      s = t.mid(12, 2).toInt();
-
-      mTime.setDate(QDate(Y, M, D));
-      mTime.setTime(QTime(h, m, s, 0));
-    }
+    mTime = ts2time(ts.text());
   }
 
   if(mSerial.isEmpty())

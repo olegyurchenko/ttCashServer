@@ -22,6 +22,7 @@
 class QSqlQuery;
 class KsefDocument;
 class XmlResponse;
+class XmlRequest;
 class KsefBillItem;
 class KsefDatabase : public QThread
 {
@@ -34,6 +35,7 @@ public:
   QString message() {return mMessage;}
   bool cashRegister(const KsefDocument& doc, XmlResponse &response);
   bool cashAddDoc(const KsefDocument& doc, XmlResponse &response);
+  bool query(XmlRequest& request, XmlResponse& response);
 protected:
 //TODO: Check size
   qlonglong mMaxSize;
@@ -52,6 +54,8 @@ protected:
   void lock() {mMutex.lock();}
   void unlock() {mMutex.unlock();}
   bool addItem(int datId, int cId, const KsefBillItem& item);
+  bool crResponse(XmlResponse& response);
+  bool datResponse(QSqlQuery &q, XmlResponse& response);
 };
 
 /*----------------------------------------------------------------------------*/
