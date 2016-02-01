@@ -15,8 +15,10 @@
 /** Publisher of this application */
 #define ORGANISATION "T&T"
 
+#define SERVICENAME "T&T cash server"
+
 /** Short description of the Windows service */
-#define DESCRIPTION "T&T Cash server"
+#define DESCRIPTION "Cash server, for CR Master, Mini"
 
 /** Logger class */
 FileLogger* logger;
@@ -107,7 +109,7 @@ void Startup::stop()
 
 
 Startup::Startup(int argc, char *argv[])
-    : QtService<QCoreApplication>(argc, argv, APPNAME)
+    : QtService<QCoreApplication>(argc, argv, SERVICENAME)
 {
     setServiceDescription(DESCRIPTION);
     setStartupType(QtServiceController::AutoStartup);
