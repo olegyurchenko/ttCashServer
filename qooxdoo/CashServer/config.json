@@ -44,7 +44,7 @@
     "QOOXDOO_PATH" : "../../../../../../..//work/qooxdoo-5.0.1-sdk",
     "QXTHEME"      : "cashserver.theme.Theme",
     "API_EXCLUDE"  : ["qx.test.*", "${APPLICATION}.theme.*", "${APPLICATION}.test.*"],
-    "LOCALES"      : [ "en" ],
+    "LOCALES"      : [ "en","ru","uk" ],
     "CACHE"        : "${TMPDIR}/qx${QOOXDOO_VERSION}/cache",
     "ROOT"         : "."
   },

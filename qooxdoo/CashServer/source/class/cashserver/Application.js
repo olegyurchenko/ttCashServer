@@ -28,9 +28,9 @@ qx.Class.define("cashserver.Application",
   members :
   {
     /**
-     * This method contains the initial application code and gets called 
+     * This method contains the initial application code and gets called
      * during startup of the application
-     * 
+     *
      * @lint ignoreDeprecated(alert)
      */
     main : function()
@@ -53,15 +53,9 @@ qx.Class.define("cashserver.Application",
       -------------------------------------------------------------------------
       */
 
+      var main = new cashserver.MainForm();
+      this.getRoot().add(main);
 
-      // Document is the application root
-      var loginWin = new cashserver.LoginWindow();
-      loginWin.open();
-/*
-      loginWin.addListener("cancel", function() {
-        loginWin.close()
-        }, this);
-        */
     }
   }
 });

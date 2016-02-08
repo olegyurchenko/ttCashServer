@@ -69,6 +69,12 @@ StoreDatabase :: ~StoreDatabase()
   QSqlDatabase::removeDatabase(mConnectionName);
 }
 /*----------------------------------------------------------------------------*/
+QSqlQuery StoreDatabase :: sqlQuery()
+{
+  QSqlQuery q(QSqlDatabase::database(mConnectionName));
+  return q;
+}
+/*----------------------------------------------------------------------------*/
 bool StoreDatabase :: error(const QSqlQuery &q)
 {
   if(q.lastError().isValid())

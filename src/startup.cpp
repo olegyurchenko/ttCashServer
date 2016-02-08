@@ -8,6 +8,7 @@
 #include "requesthandler.h"
 #include <QDir>
 #include <QFile>
+#include "database.h"
 
 /** Name of this application */
 #define APPNAME "cash_server"
@@ -79,6 +80,9 @@ void Startup::start()
     logSettings->beginGroup("logging");
     logger=new FileLogger(logSettings,10000,app);
     logger->installMsgHandler();
+
+    QSettings* databaseSettings=new QSettings(configFileName,QSettings::IniFormat,app);
+    database = new Database(databaseSettings, app);
 
     QSettings* webSettings=new QSettings(configFileName,QSettings::IniFormat,app);
     webSettings->beginGroup("files");

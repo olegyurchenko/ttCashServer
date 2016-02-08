@@ -31,10 +31,13 @@ public:
 class User
 {
 public:
+  User() : anonumous(true) {}
   QString name;
   QString pass;
   Access ksef;
   Access store;
+  bool anonumous;
+  QByteArray hash;
 };
 
 class UserStrorage : public QObject
@@ -47,6 +50,7 @@ public:
   virtual ~UserStrorage();
 
   User user(const QString& name, const QString& pass) const;
+  User userByHash(const QByteArray& hash) const;
 
 };
 

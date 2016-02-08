@@ -17,7 +17,11 @@ HEADERS += \
     src/ksef_database.h \
     src/ksef_document.h \
     src/store_database.h \
-    src/users.h
+    src/users.h \
+    src/database.h \
+    src/json.h \
+    src/ksef_lib.h \
+    src/fm_errors.h
 
 SOURCES += src/main.cpp \
            src/startup.cpp \
@@ -30,7 +34,11 @@ SOURCES += src/main.cpp \
     src/ksef_database.cpp \
     src/ksef_document.cpp \
     src/store_database.cpp \
-    src/users.cpp
+    src/users.cpp \
+    src/database.cpp \
+    src/json.cpp \
+    src/ksef_lib.cpp \
+    src/fm_errors.c
 
 
 #---------------------------------------------------------------------------------------
@@ -40,7 +48,7 @@ SOURCES += src/main.cpp \
 include(QtWebApp/qtservice/qtservice.pri)
 include(QtWebApp/httpserver/httpserver.pri)
 include(QtWebApp/logging/logging.pri)
-#include(QtWebApp/templateengine/templateengine.pri)
+include(QtWebApp/templateengine/templateengine.pri)
 
 
 INCLUDEPATH += src

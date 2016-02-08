@@ -1,0 +1,75 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Report-Msgid-Bugs-To: you@your.org\n"
+"POT-Creation-Date: 2016-02-03 17:46+0200\n"
+"PO-Revision-Date: 2016-02-08 17:44+0300\n"
+"Last-Translator: oleg <support@technotrade.ua>\n"
+"Language-Team: T&T Team <support@tecnotrade.us>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 1.5.4\n"
+
+#: cashserver/KsefForm.js:41
+msgid "KSEF"
+msgstr "КЛЭФ"
+
+#: cashserver/KsefForm.js:109
+msgid "bill"
+msgstr "чек"
+
+#: cashserver/KsefForm.js:111
+msgid "report"
+msgstr "отчет"
+
+#: cashserver/KsefForm.js:147
+msgid "By date"
+msgstr "По дате"
+
+#: cashserver/KsefForm.js:160
+msgid "Document"
+msgstr "Документ"
+
+#: cashserver/KsefForm.js:196 cashserver/StoreDelegate.js:26
+#: cashserver/StoreDelegate.js:33
+msgid "Server request error"
+msgstr "Ошибка запроса к серверу"
+
+#: cashserver/SettingsForm.js:65
+msgid "Settings"
+msgstr "Настройки"
+
+#: cashserver/SettingsForm.js:74
+msgid "User name"
+msgstr "Имя пользователя"
+
+#: cashserver/SettingsForm.js:80
+msgid "Password"
+msgstr "Пароль"
+
+#: cashserver/SettingsForm.js:87
+msgid "Interface language"
+msgstr "Язык интерфейса"
+
+#: cashserver/SettingsForm.js:91
+msgid "English"
+msgstr "English"
+
+#: cashserver/SettingsForm.js:92
+msgid "Russian"
+msgstr "Русский"
+
+#: cashserver/SettingsForm.js:93
+msgid "Ukrainian"
+msgstr "Українська"
+
+#: cashserver/SettingsForm.js:99
+msgid "remember me"
+msgstr "запомнить меня"
+
+#: cashserver/StoreForm.js:7 cashserver/StoreForm.js:12
+msgid "Store"
+msgstr "Склад"

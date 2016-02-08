@@ -1,0 +1,15 @@
+Web request handler scheme:
+
+Request:
+query="sql name",param0="param0",param1="param1"
+
+Response json:
+{
+  status : 0; //0 - ok
+  message : "error message";
+  data: [
+   {id:1, fieldName1 : val, ...},
+   ...
+   {id:999, fieldName1 : val, ...}
+ ];
+}

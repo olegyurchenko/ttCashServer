@@ -32,6 +32,7 @@ public:
 
   bool download(XmlRequest &request, XmlResponse& response);
   bool update(XmlRequest &request, XmlResponse& response);
+  QSqlQuery sqlQuery();
 
 protected:
 //TODO: Check size

@@ -14,14 +14,11 @@
 /*----------------------------------------------------------------------------*/
 #include "users.h"
 #include <QStringList>
+#include <QCryptographicHash>
 /*----------------------------------------------------------------------------*/
 UserStrorage :: UserStrorage(QSettings *settings, QObject *parent)
   : QObject(parent)
 {
-  if(!settings->group().isEmpty())
-    settings->endGroup();
-
-  settings->beginGroup("access");
   foreach(QString name, settings->childKeys())
   {
     QString val = settings->value(name, QString(",0,0,0,0")).toString();
@@ -39,6 +36,10 @@ UserStrorage :: UserStrorage(QSettings *settings, QObject *parent)
     if(lst.size() >= 5)
       u.store.write = lst.at(4).toInt();
 
+    QCryptographicHash hash(QCryptographicHash::Sha1);
+    hash.addData(u.name.toUtf8());
+    hash.addData(u.pass.toUtf8());
+    u.hash = hash.result();
     mUserMap[name] = u;
   }
 }
@@ -52,7 +53,10 @@ User UserStrorage :: user(const QString& name, const QString& pass) const
   QMap<QString, User>::ConstIterator it = mUserMap.find(name);
   User u;
   if(it != mUserMap.end())
+  {
     u = it.value();
+    u.anonumous = false;
+  }
 
   if(!u.name.isEmpty() && u.pass != pass)
     u = User();
@@ -67,4 +71,28 @@ User UserStrorage :: user(const QString& name, const QString& pass) const
   return u;
 }
 /*----------------------------------------------------------------------------*/
+User UserStrorage :: userByHash(const QByteArray& hash) const
+{
+  User u;
+  QMap<QString, User>::ConstIterator it;
+  for(it = mUserMap.begin(); it != mUserMap.end(); ++it)
+  {
+    if(it.value().hash == hash)
+    {
+      u = it.value();
+      u.anonumous = false;
+      break;
+    }
+  }
 
+  if(u.name.isEmpty() && (it = mUserMap.find("anonymous")) != mUserMap.end())
+    u = it.value();
+
+  if(u.name.isEmpty())
+    u.name = "anonymous";
+
+  u.pass = "";
+  return u;
+
+}
+/*----------------------------------------------------------------------------*/

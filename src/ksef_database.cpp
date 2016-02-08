@@ -97,6 +97,12 @@ KsefDatabase :: ~KsefDatabase()
   QSqlDatabase::removeDatabase(mConnectionName);
 }
 /*----------------------------------------------------------------------------*/
+QSqlQuery KsefDatabase :: sqlQuery()
+{
+  QSqlQuery q(QSqlDatabase::database(mConnectionName));
+  return q;
+}
+/*----------------------------------------------------------------------------*/
 bool KsefDatabase :: create()
 {
 

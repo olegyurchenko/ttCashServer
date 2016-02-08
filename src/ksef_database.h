@@ -36,6 +36,7 @@ public:
   bool cashRegister(const KsefDocument& doc, XmlResponse &response);
   bool cashAddDoc(const KsefDocument& doc, XmlResponse &response);
   bool query(XmlRequest& request, XmlResponse& response);
+  QSqlQuery sqlQuery();
 protected:
 //TODO: Check size
   qlonglong mMaxSize;
