@@ -47,6 +47,13 @@ qx.Class.define("cashserver.MainForm",
         //this.debug("End call queryStart");
       }
 
+      if(selection === this._storeForm)
+      {
+        //this.debug("Try call queryStart", this._ksefForm, this._ksefForm.queryStart);
+        this._storeForm.queryStart();
+        //this.debug("End call queryStart");
+      }
+
 
     }, this);
   }

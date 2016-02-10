@@ -11,6 +11,11 @@ qx.Class.define("cashserver.KsefForm",
     _ksefDelegate : null,
     _ksefList : null,
     _ksefDocLabel : null,
+    _dateBox : null,
+    _dateField : null,
+    _typeBox : null,
+    _typeController : null,
+    _typeCombo : null,
 
     queryStart : function() {
       this.debug("queryStart");
@@ -27,7 +32,7 @@ qx.Class.define("cashserver.KsefForm",
 
       if(this._ksefStore.getUrl() == null)
       {
-        var query = {query : "ksefGetDoc"};
+        var query = {query : "ksefDocGet"};
         this._ksefDelegate.setRequestData(query);
         this._ksefStore.setUrl("/ksef");
       }
@@ -109,7 +114,7 @@ qx.Class.define("cashserver.KsefForm",
       var type = qx.locale.Manager.tr("bill");
       if(model.getType() >= 100)
         type = qx.locale.Manager.tr("report");
-      
+
       function parseDate(str)
       {
         var parts = str.split(" ");
@@ -117,9 +122,9 @@ qx.Class.define("cashserver.KsefForm",
         var timeparts = parts[1].split(":");
         return new Date(dateparts[0], dateparts[1]-1, dateparts[2], timeparts[0], timeparts[1], timeparts[2]);
       }
-      
+
       var time = qx.util.format.DateFormat.getDateTimeInstance().format(parseDate(value));
-      
+
 //      return "<table  width=\"400\"><tr><td width=\"20%\">" + model.getId() + "</td><td width=\"40%\">" + value + "</td><td  width=\"40%\">" + model.getType() + "</tr></tr></table>";
       return "<table width=\"380\"><tr><td width=\"60%\">" + time + "</td><td  width=\"40%\">" + type + "</tr></tr></table>";
     }});
@@ -140,7 +145,7 @@ qx.Class.define("cashserver.KsefForm",
     this._crList.addListener("changeSelection", function(e) {
           var selection = crController.getSelection();
           var query = {};
-          query["query"] = "ksefGetDoc";
+          query["query"] = "ksefDocGet";
 
           for(var i = 0; i < selection.length; i++)
           {
@@ -154,17 +159,37 @@ qx.Class.define("cashserver.KsefForm",
 
 
     //Date select
-    var dateBox = new qx.ui.groupbox.CheckGroupBox(this.tr("By date"));
-    dateBox.setLayout(new qx.ui.layout.HBox());
-    dateBox.setValue(false);
-    left_container.add(dateBox);
+    this._dateBox = new qx.ui.groupbox.CheckGroupBox(this.tr("By date"));
+    this._dateBox.setLayout(new qx.ui.layout.HBox());
+    this._dateBox.setValue(false);
+    left_container.add(this._dateBox);
 
-    var dateField = new qx.ui.form.DateField();
-    dateField.setValue(new Date());
-    dateField.addListener("changeValue", function(e) {
+    this._dateField = new qx.ui.form.DateField();
+    this._dateField.setValue(new Date());
+    this._dateField.addListener("changeValue", function(e) {
       this.debug("Change Value: " + e.getData());
     });
-    dateBox.add(dateField);
+    this._dateBox.add(this._dateField);
+
+    //Type select
+    this._typeBox = new qx.ui.groupbox.CheckGroupBox(this.tr("By type"));
+    this._typeBox.setLayout(new qx.ui.layout.HBox());
+    this._typeBox.setValue(false);
+    left_container.add(this._typeBox);
+
+    var typeModel = new qx.data.Array([]);
+    typeModel.push(this.tr("Bill"));
+    typeModel.push(this.tr("Report"));
+    this._typeCombo = new qx.ui.form.SelectBox();
+    this._typeController = new qx.data.controller.List(typeModel, this._typeCombo);
+    this._typeBox.add(this._typeCombo);
+    this._typeController.addListener("changeSelection", function()
+    {
+      var selection = this._typeController.getSelection().getItem(0);
+      this.debug(selection);
+    },
+    this);
+
 
     //Bill label
     var box = new qx.ui.groupbox.GroupBox(this.tr("Document"), "resource/cashserver/bill.png");

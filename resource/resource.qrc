@@ -3,6 +3,13 @@
         <file>create_ksef_stor.sql</file>
         <file>create_cash_stor.sql</file>
         <file>getCR.sql</file>
-        <file>ksefGetDoc.sql</file>
+        <file>GRP.sql</file>
+        <file>ksefDocGet.sql</file>
+        <file>DPT.sql</file>
+        <file>PLU.sql</file>
+        <file>PRC.sql</file>
+        <file>BAR.sql</file>
+        <file>EMT.sql</file>
+        <file>CNT.sql</file>
     </qresource>
 </RCC>

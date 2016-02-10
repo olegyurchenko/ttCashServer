@@ -13,29 +13,69 @@ msgstr ""
 "Language: en\n"
 "X-Generator: Poedit 1.5.4\n"
 
-#: cashserver/KsefForm.js:41
+#: cashserver/BarcodePage.js:7
+msgid "Barcodes"
+msgstr ""
+
+#: cashserver/ContractPage.js:7
+msgid "Contracts"
+msgstr ""
+
+#: cashserver/DeptPage.js:7
+msgid "Departments"
+msgstr ""
+
+#: cashserver/EmitentPage.js:7
+msgid "Emitents"
+msgstr ""
+
+#: cashserver/GroupPage.js:7
+msgid "Product groups"
+msgstr ""
+
+#: cashserver/KsefForm.js:46
 msgid "KSEF"
 msgstr ""
 
-#: cashserver/KsefForm.js:109
+#: cashserver/KsefForm.js:114
 msgid "bill"
 msgstr ""
 
-#: cashserver/KsefForm.js:111
+#: cashserver/KsefForm.js:116
 msgid "report"
 msgstr ""
 
-#: cashserver/KsefForm.js:147
+#: cashserver/KsefForm.js:162
 msgid "By date"
 msgstr ""
 
-#: cashserver/KsefForm.js:160
+#: cashserver/KsefForm.js:175
+msgid "By type"
+msgstr ""
+
+#: cashserver/KsefForm.js:181
+msgid "Bill"
+msgstr ""
+
+#: cashserver/KsefForm.js:182
+msgid "Report"
+msgstr ""
+
+#: cashserver/KsefForm.js:195
 msgid "Document"
 msgstr ""
 
-#: cashserver/KsefForm.js:196 cashserver/StoreDelegate.js:26
-#: cashserver/StoreDelegate.js:33
+#: cashserver/StoreDelegate.js:26 cashserver/StoreDelegate.js:33
+#: cashserver/KsefForm.js:231
 msgid "Server request error"
+msgstr ""
+
+#: cashserver/PluPage.js:7
+msgid "Products"
+msgstr ""
+
+#: cashserver/PricePage.js:7
+msgid "Product prices"
 msgstr ""
 
 #: cashserver/SettingsForm.js:65
@@ -70,6 +110,6 @@ msgstr "Українська"
 msgid "remember me"
 msgstr ""
 
-#: cashserver/StoreForm.js:7 cashserver/StoreForm.js:12
+#: cashserver/StoreForm.js:18
 msgid "Store"
 msgstr ""

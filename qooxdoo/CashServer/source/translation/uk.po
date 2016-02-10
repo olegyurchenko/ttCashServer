@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: you@your.org\n"
 "POT-Creation-Date: 2016-02-03 17:46+0200\n"
-"PO-Revision-Date: 2016-02-08 17:46+0300\n"
+"PO-Revision-Date: 2016-02-09 19:01+0300\n"
 "Last-Translator: oleg <support@technotrade.ua>\n"
 "Language-Team: T&T Team <support@technotrade.ua>\n"
 "MIME-Version: 1.0\n"
@@ -13,30 +13,70 @@ msgstr ""
 "Language: uk\n"
 "X-Generator: Poedit 1.5.4\n"
 
-#: cashserver/KsefForm.js:41
+#: cashserver/BarcodePage.js:7
+msgid "Barcodes"
+msgstr "Баркоди"
+
+#: cashserver/ContractPage.js:7
+msgid "Contracts"
+msgstr "Угоди"
+
+#: cashserver/DeptPage.js:7
+msgid "Departments"
+msgstr "Відділи"
+
+#: cashserver/EmitentPage.js:7
+msgid "Emitents"
+msgstr "Емітенти"
+
+#: cashserver/GroupPage.js:7
+msgid "Product groups"
+msgstr "Товарні групи"
+
+#: cashserver/KsefForm.js:46
 msgid "KSEF"
 msgstr "КСЕФ"
 
-#: cashserver/KsefForm.js:109
+#: cashserver/KsefForm.js:114
 msgid "bill"
 msgstr "чек"
 
-#: cashserver/KsefForm.js:111
+#: cashserver/KsefForm.js:116
 msgid "report"
 msgstr "звіт"
 
-#: cashserver/KsefForm.js:147
+#: cashserver/KsefForm.js:162
 msgid "By date"
 msgstr "По даті"
 
-#: cashserver/KsefForm.js:160
+#: cashserver/KsefForm.js:175
+msgid "By type"
+msgstr "По типу"
+
+#: cashserver/KsefForm.js:181
+msgid "Bill"
+msgstr "Чек"
+
+#: cashserver/KsefForm.js:182
+msgid "Report"
+msgstr "Звіт"
+
+#: cashserver/KsefForm.js:195
 msgid "Document"
 msgstr "Документ"
 
-#: cashserver/KsefForm.js:196 cashserver/StoreDelegate.js:26
-#: cashserver/StoreDelegate.js:33
+#: cashserver/StoreDelegate.js:26 cashserver/StoreDelegate.js:33
+#: cashserver/KsefForm.js:231
 msgid "Server request error"
 msgstr "Помилка запиту до сервера"
+
+#: cashserver/PluPage.js:7
+msgid "Products"
+msgstr "Товари"
+
+#: cashserver/PricePage.js:7
+msgid "Product prices"
+msgstr "Ціни на товари"
 
 #: cashserver/SettingsForm.js:65
 msgid "Settings"
@@ -70,6 +110,6 @@ msgstr "Українська"
 msgid "remember me"
 msgstr "пам'ятати мене"
 
-#: cashserver/StoreForm.js:7 cashserver/StoreForm.js:12
+#: cashserver/StoreForm.js:18
 msgid "Store"
 msgstr "Склад"
