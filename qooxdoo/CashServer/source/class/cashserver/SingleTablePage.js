@@ -122,11 +122,18 @@ qx.Class.define("cashserver.SingleTablePage",
           var key = model.getValue(this._keyField, changedData.firstRow);
           var fields = this._fields;
           var fieldsLen = fields.length;
+          var data = [];
+          for(var col = 0; col < fieldsLen; col ++)
+          {
+            data.push(model.getValue(col, changedData.firstRow));
+          } 
+          data = this._convertFromUi(data);
           var value = {};
           for(var col = 0; col < fieldsLen; col ++)
           {
-            value[fields[col]] = model.getValue(col, changedData.firstRow);
+            value[fields[col]] = data[col];
           } 
+
           this._modifiedData[key] = value;
           this.debug(key, value);
           this._commitCommand.setEnabled(true);
