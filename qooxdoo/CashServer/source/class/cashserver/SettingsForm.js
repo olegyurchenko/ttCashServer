@@ -1,3 +1,18 @@
+/*----------------------------------------------------------------------------*/
+/**
+* @pkg SettingsForm
+*/
+/**
+* Tab page fro enter setings.
+*
+* Settings now are: username, password and locale<br>
+* (C) T&T team, Kiev, Ukraine 2016.<br>
+* started 13.01.2016 11:39:37<br>
+* @pkgdoc SettingsForm
+* @author oleg
+* @version 0.01
+*/
+/*----------------------------------------------------------------------------*/
 qx.Class.define("cashserver.SettingsForm",
 {
   extend : qx.ui.tabview.Page,
@@ -15,22 +30,27 @@ qx.Class.define("cashserver.SettingsForm",
     _locales : ["en", "ru", "uk"],
     _isModified : true,
 
+    /*------------------------------------------------------------------------*/
+    /**Load settings from db*/
+    /*------------------------------------------------------------------------*/
     loadSettings : function() {
-      var lang = qx.bom.Cookie.get("language");
-      var user = qx.bom.Cookie.get("user");
-      var pass = qx.bom.Cookie.get("pass");
+      var db = cashserver.Database.getInstance();
+      db.load();
 
-      this._nameEdit.setValue(user);
-      this._passEdit.setValue(pass);
+      this._nameEdit.setValue(db.username);
+      this._passEdit.setValue(db.password);
 
-      var index = this._locales.indexOf(lang);
+      var index = this._locales.indexOf(db.language);
       if(index >= 0 && index < this._locales.length)
         qx.locale.Manager.getInstance().setLocale(this._locales[index]);
 
-      this._rememberCheck.setValue(lang != null);
+      this._rememberCheck.setValue(db.language != null);
       this._isModified = false;
     },
 
+    /*------------------------------------------------------------------------*/
+    /**Save settings to db*/
+    /*------------------------------------------------------------------------*/
     saveSettings : function() {
 
       var db = cashserver.Database.getInstance();
@@ -43,23 +63,22 @@ qx.Class.define("cashserver.SettingsForm",
 
       if(!this._rememberCheck.getValue())
       {
-        qx.bom.Cookie.del("language");
-        qx.bom.Cookie.del("user");
-        qx.bom.Cookie.del("pass");
+        db.del();
       }
       else
       {
-        qx.bom.Cookie.set("language", qx.locale.Manager.getInstance().getLanguage(), 30);
-        qx.bom.Cookie.set("user", this._nameEdit.getValue(), 30);
-        qx.bom.Cookie.set("pass", this._passEdit.getValue(), 30);
+        db.save();
       }
 
       this._isModified = false;
     },
 
-    __none : null
+    __none__ : null
   },
 
+  /*------------------------------------------------------------------------*/
+  /**Constructor*/
+  /*------------------------------------------------------------------------*/
   construct : function()
   {
     this.base(arguments, this.tr("Settings"), "resource/cashserver/settings.png");
@@ -149,5 +168,6 @@ qx.Class.define("cashserver.SettingsForm",
 
   }
 });
+/*----------------------------------------------------------------------------*/
 
 

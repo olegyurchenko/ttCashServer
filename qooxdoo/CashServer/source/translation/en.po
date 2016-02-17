@@ -17,19 +17,64 @@ msgstr ""
 msgid "Barcodes"
 msgstr ""
 
+#: cashserver/BarcodePage.js:9
+msgid "Barcode"
+msgstr ""
+
+#: cashserver/BarcodePage.js:10 cashserver/ContractPage.js:14
+msgid "Product"
+msgstr ""
+
 #: cashserver/ContractPage.js:7
 msgid "Contracts"
 msgstr ""
 
-#: cashserver/DeptPage.js:7
+#: cashserver/ContractPage.js:9
+msgid "Number"
+msgstr ""
+
+#: cashserver/GroupPage.js:25 cashserver/DeptPage.js:23
+#: cashserver/PluPage.js:103 cashserver/EmitentPage.js:11
+#: cashserver/ContractPage.js:10
+msgid "Name"
+msgstr ""
+
+#: cashserver/ContractPage.js:11
+msgid "Emitent"
+msgstr ""
+
+#: cashserver/ContractPage.js:12
+msgid "Pay form"
+msgstr ""
+
+#: cashserver/EmitentPage.js:10 cashserver/ContractPage.js:13
+msgid "Flags"
+msgstr ""
+
+#: cashserver/ContractPage.js:15
+msgid "Balance"
+msgstr ""
+
+#: cashserver/PluPage.js:104 cashserver/ContractPage.js:16
+#: cashserver/PricePage.js:10
+msgid "Price"
+msgstr ""
+
+#: cashserver/DeptPage.js:20
 msgid "Departments"
+msgstr ""
+
+#: cashserver/GroupPage.js:24 cashserver/DeptPage.js:22
+#: cashserver/PluPage.js:102 cashserver/EmitentPage.js:9
+#: cashserver/PricePage.js:9
+msgid "Code"
 msgstr ""
 
 #: cashserver/EmitentPage.js:7
 msgid "Emitents"
 msgstr ""
 
-#: cashserver/GroupPage.js:7
+#: cashserver/GroupPage.js:21
 msgid "Product groups"
 msgstr ""
 
@@ -65,13 +110,31 @@ msgstr ""
 msgid "Document"
 msgstr ""
 
+#: cashserver/SingleTablePage.js:140 cashserver/SingleTablePage.js:154
+#: cashserver/SingleTablePage.js:291 cashserver/SingleTablePage.js:303
 #: cashserver/StoreDelegate.js:26 cashserver/StoreDelegate.js:33
 #: cashserver/KsefForm.js:231
 msgid "Server request error"
 msgstr ""
 
-#: cashserver/PluPage.js:7
+#: cashserver/PluPage.js:100
 msgid "Products"
+msgstr ""
+
+#: cashserver/PluPage.js:105
+msgid "Group"
+msgstr ""
+
+#: cashserver/PluPage.js:106
+msgid "Dept"
+msgstr ""
+
+#: cashserver/PluPage.js:107 cashserver/PluPage.js:108
+msgid "Tax group"
+msgstr ""
+
+#: cashserver/PluPage.js:109
+msgid "Quantity decimals"
 msgstr ""
 
 #: cashserver/PricePage.js:7
@@ -110,6 +173,22 @@ msgstr "Українська"
 msgid "remember me"
 msgstr ""
 
-#: cashserver/StoreForm.js:18
+#: cashserver/SingleTablePage.js:335
+msgid "Add new record to table"
+msgstr ""
+
+#: cashserver/SingleTablePage.js:348
+msgid "Delete selected record"
+msgstr ""
+
+#: cashserver/SingleTablePage.js:364
+msgid "Apply changes"
+msgstr ""
+
+#: cashserver/SingleTablePage.js:377
+msgid "Skip changes"
+msgstr ""
+
+#: cashserver/StoreForm.js:28
 msgid "Store"
 msgstr ""

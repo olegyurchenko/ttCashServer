@@ -109,20 +109,101 @@ void WebRequestHandler :: ksefRequest(User& user, HttpRequest& request, HttpResp
 /*----------------------------------------------------------------------------*/
 void WebRequestHandler :: storeRequest(User& user, HttpRequest& request, HttpResponse& response)
 {
-  if(!user.store.read)
+  if(request.getMethod() == "GET")
   {
-    response.setHeader("Content-Type", "text/html; charset=utf8");
-    response.setStatus(403,"forbidden");
-    response.write("403 forbidden",true);
-  }
-  else
-  {
-    QSqlQuery q = database->storeDatabase()->sqlQuery();
-    QVariant result;
-    query(request.getParameterMap(), q, result);
+    if(!user.store.read)
+    {
+      response.setHeader("Content-Type", "text/html; charset=utf8");
+      response.setStatus(403,"forbidden");
+      response.write("403 forbidden",true);
+    }
+    else
+    {
+      QSqlQuery q = database->storeDatabase()->sqlQuery();
+      QVariant result;
+      query(request.getParameterMap(), q, result);
 
-    response.setHeader("Content-Type", "application/json; charset=utf8");
-    response.write(QtJson::serialize(result), true);
+      response.setHeader("Content-Type", "application/json; charset=utf8");
+      response.write(QtJson::serialize(result), true);
+    }
+  }
+  if(request.getMethod() == "POST")
+  {
+    if(!user.store.write)
+    {
+      response.setHeader("Content-Type", "text/html; charset=utf8");
+      response.setStatus(403,"forbidden");
+      response.write("403 forbidden",true);
+    }
+    else
+    {
+      QVariant result;
+      QString json = QString::fromUtf8(request.getBody());
+      bool jsonOk = false;
+      QVariantList lst = QtJson::parse(json, jsonOk).toList();
+      QMap<QString, QString> keyMap;
+      keyMap["GRP"] = "C";
+      keyMap["DPT"] = "C";
+      keyMap["PLU"] = "C";
+      keyMap["PRC"] = "C";
+      keyMap["BAR"] = "CD";
+      keyMap["EMT"] = "C";
+      keyMap["CNT"] = "PAN";
+      QtJson::insert(result, "status", 0);
+      QtJson::insert(result, "message", "");
+
+      if(!jsonOk)
+      {
+        QtJson::insert(result, "status", -1);
+        QtJson::insert(result, "message", "JSON parse error");
+      }
+      else
+      {
+        int size = lst.size();
+        bool ok = true;
+        if(size)
+          database->storeDatabase()->sqlQuery().exec("BEGIN TRANSACTION");
+        for(int i = 0; i < size; i++)
+        {
+          QVariantMap m = lst.at(i).toMap();
+          QVariantMap safeMap;
+          QString tableName;
+          QVariantMap::Iterator mi = m.find("TABLE");
+          if(mi == m.end())
+          {
+            QtJson::insert(result, "status", -1);
+            QtJson::insert(result, "message", "Field 'TABLE' not found");
+            ok = false;
+            break;
+          }
+          tableName = sqlStr(mi.value().toString());
+          m.erase(mi);
+
+          for(mi = m.begin(); mi != m.end(); ++mi)
+            safeMap.insert(sqlStr(mi.key()), mi.value());
+
+          if(!database->storeDatabase()->updateItem(tableName, keyMap[tableName.toUpper()], safeMap))
+          {
+            QtJson::insert(result, "status", -1);
+            QtJson::insert(result, "message", database->storeDatabase()->message());
+            ok = false;
+            break;
+          }
+        }
+
+        if(size)
+        {
+          if(ok)
+            database->storeDatabase()->sqlQuery().exec("COMMIT");
+          else
+            database->storeDatabase()->sqlQuery().exec("ROLLBACK");
+
+        }
+
+      }
+      response.setHeader("Content-Type", "application/json; charset=utf8");
+      response.write(QtJson::serialize(result), true);
+    }
   }
 }
 /*----------------------------------------------------------------------------*/
@@ -290,6 +371,16 @@ void WebRequestHandler :: ksefDocRequest(User& user, HttpRequest& request, HttpR
   content += "</body></html>";
   response.write(content.toUtf8(), true);
 
+}
+/*----------------------------------------------------------------------------*/
+QString WebRequestHandler :: sqlStr(const QString& src)
+{
+  //Prevent SQL enjection
+  QString dst = src;
+  dst.remove("'");
+  dst.remove(";");
+  //TODO
+  return dst;
 }
 /*----------------------------------------------------------------------------*/
 

@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: you@your.org\n"
 "POT-Creation-Date: 2016-02-03 17:46+0200\n"
-"PO-Revision-Date: 2016-02-09 19:00+0300\n"
+"PO-Revision-Date: 2016-02-13 10:14+0300\n"
 "Last-Translator: oleg <support@technotrade.ua>\n"
 "Language-Team: T&T Team <support@tecnotrade.us>\n"
 "MIME-Version: 1.0\n"
@@ -17,19 +17,64 @@ msgstr ""
 msgid "Barcodes"
 msgstr "Баркоды"
 
+#: cashserver/BarcodePage.js:9
+msgid "Barcode"
+msgstr "Баркод"
+
+#: cashserver/BarcodePage.js:10 cashserver/ContractPage.js:14
+msgid "Product"
+msgstr "Товар"
+
 #: cashserver/ContractPage.js:7
 msgid "Contracts"
 msgstr "Договора"
 
-#: cashserver/DeptPage.js:7
+#: cashserver/ContractPage.js:9
+msgid "Number"
+msgstr "Номер"
+
+#: cashserver/GroupPage.js:25 cashserver/DeptPage.js:23
+#: cashserver/PluPage.js:103 cashserver/EmitentPage.js:11
+#: cashserver/ContractPage.js:10
+msgid "Name"
+msgstr "Название"
+
+#: cashserver/ContractPage.js:11
+msgid "Emitent"
+msgstr "Эмитент"
+
+#: cashserver/ContractPage.js:12
+msgid "Pay form"
+msgstr "Форма оплаты"
+
+#: cashserver/EmitentPage.js:10 cashserver/ContractPage.js:13
+msgid "Flags"
+msgstr "Флаги"
+
+#: cashserver/ContractPage.js:15
+msgid "Balance"
+msgstr "Баланс"
+
+#: cashserver/PluPage.js:104 cashserver/ContractPage.js:16
+#: cashserver/PricePage.js:10
+msgid "Price"
+msgstr "Цена"
+
+#: cashserver/DeptPage.js:20
 msgid "Departments"
 msgstr "Отделы"
+
+#: cashserver/GroupPage.js:24 cashserver/DeptPage.js:22
+#: cashserver/PluPage.js:102 cashserver/EmitentPage.js:9
+#: cashserver/PricePage.js:9
+msgid "Code"
+msgstr "Код"
 
 #: cashserver/EmitentPage.js:7
 msgid "Emitents"
 msgstr "Эмитенты"
 
-#: cashserver/GroupPage.js:7
+#: cashserver/GroupPage.js:21
 msgid "Product groups"
 msgstr "Товарные группы"
 
@@ -65,14 +110,32 @@ msgstr "Отчет"
 msgid "Document"
 msgstr "Документ"
 
+#: cashserver/SingleTablePage.js:140 cashserver/SingleTablePage.js:154
+#: cashserver/SingleTablePage.js:291 cashserver/SingleTablePage.js:303
 #: cashserver/StoreDelegate.js:26 cashserver/StoreDelegate.js:33
 #: cashserver/KsefForm.js:231
 msgid "Server request error"
 msgstr "Ошибка запроса к серверу"
 
-#: cashserver/PluPage.js:7
+#: cashserver/PluPage.js:100
 msgid "Products"
 msgstr "Товары"
+
+#: cashserver/PluPage.js:105
+msgid "Group"
+msgstr "Группа"
+
+#: cashserver/PluPage.js:106
+msgid "Dept"
+msgstr "Отдел"
+
+#: cashserver/PluPage.js:107 cashserver/PluPage.js:108
+msgid "Tax group"
+msgstr "Нал. группа"
+
+#: cashserver/PluPage.js:109
+msgid "Quantity decimals"
+msgstr "Позиция запятой"
 
 #: cashserver/PricePage.js:7
 msgid "Product prices"
@@ -110,6 +173,22 @@ msgstr "Українська"
 msgid "remember me"
 msgstr "запомнить меня"
 
-#: cashserver/StoreForm.js:18
+#: cashserver/SingleTablePage.js:335
+msgid "Add new record to table"
+msgstr "Добавить новую запись"
+
+#: cashserver/SingleTablePage.js:348
+msgid "Delete selected record"
+msgstr "Удалить выбранную запись"
+
+#: cashserver/SingleTablePage.js:364
+msgid "Apply changes"
+msgstr "Применить изменения"
+
+#: cashserver/SingleTablePage.js:377
+msgid "Skip changes"
+msgstr "Отменить изменения"
+
+#: cashserver/StoreForm.js:28
 msgid "Store"
 msgstr "Склад"

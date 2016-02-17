@@ -1,3 +1,17 @@
+/*----------------------------------------------------------------------------*/
+/**
+* @pkg KsefForm
+*/
+/**
+* Tab page for view KSEF (electronic cash journal).
+*
+* (C) T&T team, Kiev, Ukraine 2016.<br>
+* started 13.02.2016 12:15:26<br>
+* @pkgdoc KsefForm
+* @author oleg
+* @version 0.01
+*/
+/*----------------------------------------------------------------------------*/
 qx.Class.define("cashserver.KsefForm",
 {
   extend : qx.ui.tabview.Page,
@@ -17,6 +31,7 @@ qx.Class.define("cashserver.KsefForm",
     _typeController : null,
     _typeCombo : null,
 
+    /*------------------------------------------------------------------------*/
     queryStart : function() {
       this.debug("queryStart");
       if(this._started)
@@ -38,9 +53,12 @@ qx.Class.define("cashserver.KsefForm",
       }
 
     },
-    __none : null
+    __none__ : null
   },
 
+  /*------------------------------------------------------------------------*/
+  /**Constructor*/
+  /*------------------------------------------------------------------------*/
   construct : function()
   {
     this.base(arguments, this.tr("KSEF"), "resource/cashserver/ksef.png");
@@ -54,7 +72,9 @@ qx.Class.define("cashserver.KsefForm",
     layout.setRowFlex(1, 1);
     this.setLayout(layout);
 
+    /*----------------------------------------------------------------------*/
     //-- CR panel
+    /*----------------------------------------------------------------------*/
     var left_container = new qx.ui.container.Composite()
     this.add(left_container, {row: 0, column: 0});
 
@@ -87,7 +107,9 @@ qx.Class.define("cashserver.KsefForm",
     this._crStore = new qx.data.store.Json(null, this._crDelegate);
     this._crStore.bind('model', crController, 'model');
 
+    /*----------------------------------------------------------------------*/
     //-- Bills panel
+    /*----------------------------------------------------------------------*/
     var right_container = new qx.ui.container.Composite()
     this.add(right_container, {row: 0, column: 1});
 
@@ -125,7 +147,6 @@ qx.Class.define("cashserver.KsefForm",
 
       var time = qx.util.format.DateFormat.getDateTimeInstance().format(parseDate(value));
 
-//      return "<table  width=\"400\"><tr><td width=\"20%\">" + model.getId() + "</td><td width=\"40%\">" + value + "</td><td  width=\"40%\">" + model.getType() + "</tr></tr></table>";
       return "<table width=\"380\"><tr><td width=\"60%\">" + time + "</td><td  width=\"40%\">" + type + "</tr></tr></table>";
     }});
 
@@ -158,7 +179,9 @@ qx.Class.define("cashserver.KsefForm",
         }, this);
 
 
+    /*----------------------------------------------------------------------*/
     //Date select
+    /*----------------------------------------------------------------------*/
     this._dateBox = new qx.ui.groupbox.CheckGroupBox(this.tr("By date"));
     this._dateBox.setLayout(new qx.ui.layout.HBox());
     this._dateBox.setValue(false);
@@ -171,7 +194,9 @@ qx.Class.define("cashserver.KsefForm",
     });
     this._dateBox.add(this._dateField);
 
+    /*----------------------------------------------------------------------*/
     //Type select
+    /*----------------------------------------------------------------------*/
     this._typeBox = new qx.ui.groupbox.CheckGroupBox(this.tr("By type"));
     this._typeBox.setLayout(new qx.ui.layout.HBox());
     this._typeBox.setValue(false);
@@ -191,7 +216,9 @@ qx.Class.define("cashserver.KsefForm",
     this);
 
 
+    /*----------------------------------------------------------------------*/
     //Bill label
+    /*----------------------------------------------------------------------*/
     var box = new qx.ui.groupbox.GroupBox(this.tr("Document"), "resource/cashserver/bill.png");
     right_container.add(box);
 
@@ -236,10 +263,7 @@ qx.Class.define("cashserver.KsefForm",
          }
 
         }, this);
-
-
   }
-
-
 });
+/*----------------------------------------------------------------------------*/
 

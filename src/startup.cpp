@@ -72,6 +72,9 @@ void Startup::start()
     app->setApplicationName(APPNAME);
     app->setOrganizationName(ORGANISATION);
 
+    app->addLibraryPath(app->applicationDirPath());
+    app->addLibraryPath(app->applicationDirPath() + "/plugins");
+
     // Find the configuration file
     QString configFileName=searchConfigFile();
 

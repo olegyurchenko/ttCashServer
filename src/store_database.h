@@ -33,6 +33,7 @@ public:
   bool download(XmlRequest &request, XmlResponse& response);
   bool update(XmlRequest &request, XmlResponse& response);
   QSqlQuery sqlQuery();
+  bool updateItem(const QString& tableName, const QString& primaryKey,  const QVariantMap &v);
 
 protected:
 //TODO: Check size
@@ -45,7 +46,6 @@ protected:
   bool error(const QSqlQuery &q);
   bool create();
   bool downloadTable(QSqlQuery &q, XmlResponse& response, const QString& tableName, int *recordCount);
-  bool updateItem(const QString& tableName, const QString& primaryKey,  const QVariantHash &v);
   QVariantMap revisionsGet();
 };
 

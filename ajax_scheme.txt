@@ -1,5 +1,6 @@
 Web request handler scheme:
 
+--- Method GET --- 
 Request:
 query="sql name",param0="param0",param1="param1"
 
@@ -12,4 +13,19 @@ Response json:
    ...
    {id:999, fieldName1 : val, ...}
  ];
+}
+
+--- Method POST --- 
+Body json
+{ [
+   {TABLE:"TableName", DEL: 0, fieldName1 : val, ...},
+   ...
+   {TABLE:"TableName", DEL: 0, fieldName1 : val, ...}
+
+] }
+
+Response json:
+{
+  status : 0; //0 - ok
+  message : "error message";
 }

@@ -285,7 +285,7 @@ bool StoreDatabase :: update(XmlRequest &request, XmlResponse &response)
     if(e.tagName() == "GRP")
     {
       QDomElement ee = e.firstChildElement();
-      QVariantHash v;
+      QVariantMap v;
       v["DEL"] = e.attribute("DEL", "0").toInt();
       while(!ee.isNull())
       {
@@ -300,7 +300,7 @@ bool StoreDatabase :: update(XmlRequest &request, XmlResponse &response)
     if(e.tagName() == "DPT")
     {
       QDomElement ee = e.firstChildElement();
-      QVariantHash v;
+      QVariantMap v;
       v["DEL"] = e.attribute("DEL", "0").toInt();
       while(!ee.isNull())
       {
@@ -315,7 +315,7 @@ bool StoreDatabase :: update(XmlRequest &request, XmlResponse &response)
     if(e.tagName() == "PLU")
     {
       QDomElement ee = e.firstChildElement();
-      QVariantHash v;
+      QVariantMap v;
       v["DEL"] = e.attribute("DEL", "0").toInt();
       while(!ee.isNull())
       {
@@ -341,7 +341,7 @@ bool StoreDatabase :: update(XmlRequest &request, XmlResponse &response)
     if(e.tagName() == "PRC")
     {
       QDomElement ee = e.firstChildElement();
-      QVariantHash v;
+      QVariantMap v;
       v["DEL"] = e.attribute("DEL", "0").toInt();
 
       while(!ee.isNull())
@@ -358,7 +358,7 @@ bool StoreDatabase :: update(XmlRequest &request, XmlResponse &response)
     if(e.tagName() == "BAR")
     {
       QDomElement ee = e.firstChildElement();
-      QVariantHash v;
+      QVariantMap v;
       v["DEL"] = e.attribute("DEL", "0").toInt();
       while(!ee.isNull())
       {
@@ -373,7 +373,7 @@ bool StoreDatabase :: update(XmlRequest &request, XmlResponse &response)
     if(e.tagName() == "EMT")
     {
       QDomElement ee = e.firstChildElement();
-      QVariantHash v;
+      QVariantMap v;
       v["DEL"] = e.attribute("DEL", "0").toInt();
       while(!ee.isNull())
       {
@@ -390,7 +390,7 @@ bool StoreDatabase :: update(XmlRequest &request, XmlResponse &response)
     if(e.tagName() == "CNT")
     {
       QDomElement ee = e.firstChildElement();
-      QVariantHash v;
+      QVariantMap v;
       v["DEL"] = e.attribute("DEL", "0").toInt();
       while(!ee.isNull())
       {
@@ -445,7 +445,7 @@ bool StoreDatabase :: update(XmlRequest &request, XmlResponse &response)
   return ok;
 }
 /*----------------------------------------------------------------------------*/
-bool StoreDatabase :: updateItem(const QString& tableName, const QString& primaryKey,  const QVariantHash &v)
+bool StoreDatabase :: updateItem(const QString& tableName, const QString& primaryKey,  const QVariantMap &v)
 {
   QSqlQuery q(QSqlDatabase::database(mConnectionName));
 
@@ -463,7 +463,7 @@ bool StoreDatabase :: updateItem(const QString& tableName, const QString& primar
     QString sql = QString("update \"%1\" set ").arg(tableName);
 
     bool comma = false;
-    for(QVariantHash::ConstIterator it = v.begin(); it != v.end(); ++it)
+    for(QVariantMap::ConstIterator it = v.begin(); it != v.end(); ++it)
     {
       if(it.key() != primaryKey)
       {
@@ -476,7 +476,7 @@ bool StoreDatabase :: updateItem(const QString& tableName, const QString& primar
 
     sql += QString("where \"%1\" = ?").arg(primaryKey);
     q.prepare(sql);
-    for(QVariantHash::ConstIterator it = v.begin(); it != v.end(); ++it)
+    for(QVariantMap::ConstIterator it = v.begin(); it != v.end(); ++it)
     {
       if(it.key() != primaryKey)
       {
@@ -488,7 +488,7 @@ bool StoreDatabase :: updateItem(const QString& tableName, const QString& primar
   else
   {
     QString sql = QString("insert into \"%1\"(").arg(tableName);
-    for(QVariantHash::ConstIterator it = v.begin(); it != v.end(); ++it)
+    for(QVariantMap::ConstIterator it = v.begin(); it != v.end(); ++it)
     {
       if(it != v.begin())
         sql += ",";
@@ -496,7 +496,7 @@ bool StoreDatabase :: updateItem(const QString& tableName, const QString& primar
     }
 
     sql += ") values(";
-    for(QVariantHash::ConstIterator it = v.begin(); it != v.end(); ++it)
+    for(QVariantMap::ConstIterator it = v.begin(); it != v.end(); ++it)
     {
       if(it != v.begin())
         sql += ",";
@@ -504,7 +504,7 @@ bool StoreDatabase :: updateItem(const QString& tableName, const QString& primar
     }
     sql += ")";
     q.prepare(sql);
-    for(QVariantHash::ConstIterator it = v.begin(); it != v.end(); ++it)
+    for(QVariantMap::ConstIterator it = v.begin(); it != v.end(); ++it)
     {
       q.addBindValue(it.value());
     }

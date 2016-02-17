@@ -39,8 +39,8 @@ qx.Class.define("cashserver.StoreForm",
     this._pluPage = new cashserver.PluPage();
     tabView.add(this._pluPage);
 
-    this._prcPage = new cashserver.PricePage();
-    tabView.add(this._prcPage);
+    //this._prcPage = new cashserver.PricePage();
+    //tabView.add(this._prcPage);
 
     this._barPage = new cashserver.BarcodePage();
     tabView.add(this._barPage);

@@ -1,3 +1,18 @@
+/*----------------------------------------------------------------------------*/
+/**
+* @pkg MainForm
+*/
+/**
+* Web UI main form.
+*
+* MainForm is e tabView with 3 page: 1-settings, 2-ksef, 3-store<br>
+* (C) T&T team, Kiev, Ukraine 2016.<br>
+* started 13.01.2016 11:02:38<br>
+* @pkgdoc MainForm
+* @author oleg
+* @version 0.01
+*/
+/*----------------------------------------------------------------------------*/
 qx.Class.define("cashserver.MainForm",
 {
   extend : qx.ui.tabview.TabView,
@@ -15,11 +30,6 @@ qx.Class.define("cashserver.MainForm",
   {
     this.base(arguments);
 
-    //var layout = new qx.ui.layout.Grid(0, 0);
-    //parent.setLayout(layout);
-
-    //parent.add(this);
-
     this._settingsForm = new cashserver.SettingsForm();
     this.add(this._settingsForm);
 
@@ -35,23 +45,17 @@ qx.Class.define("cashserver.MainForm",
     {
       var selection = e.getData()[0];
 
-      //this.debug(selection, this._settingsForm, e.getData());
       if(selection != this._settingsForm)
         this._settingsForm.saveSettings();
 
-      //this.debug(selection, this._ksefForm, selection === this._ksefForm, selection == this._ksefForm);
       if(selection === this._ksefForm)
       {
-        //this.debug("Try call queryStart", this._ksefForm, this._ksefForm.queryStart);
         this._ksefForm.queryStart();
-        //this.debug("End call queryStart");
       }
 
       if(selection === this._storeForm)
       {
-        //this.debug("Try call queryStart", this._ksefForm, this._ksefForm.queryStart);
         this._storeForm.queryStart();
-        //this.debug("End call queryStart");
       }
 
 
@@ -59,3 +63,4 @@ qx.Class.define("cashserver.MainForm",
   }
 
 });
+/*----------------------------------------------------------------------------*/

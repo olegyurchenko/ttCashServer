@@ -43,6 +43,7 @@ protected:
 
     bool query(const QMultiMap<QByteArray,QByteArray>& params, QSqlQuery &q, QVariant& v);
     QString loadSqlFromFile(const QString& fileName, bool *ok);
+    QString sqlStr(const QString& src);
 
 };
 
